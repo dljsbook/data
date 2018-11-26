@@ -1,0 +1,9 @@
+cache: yarn
+language: node_js
+node_js:
+  - "0.10"
+  - "0.9"
+env:
+  - TEST_DIR=.
+script: cd $TEST_DIR && yarn && yarn test
+

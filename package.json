@@ -1,0 +1,56 @@
+{
+  "name": "@dljsbook/datasets",
+  "version": "0.2.0",
+  "description": "Datasets",
+  "author": "Kevin Scott <kevin@dljsbook.com>",
+  "license": "MIT",
+  "repository": "https://github.com/dljsbook/datasets",
+  "main": "dist/index.js",
+  "scripts": {
+    "deploy": "gh-pages -d data",
+    "prepublish": "yarn build",
+    "build": "rollup -c rollup.config.js",
+    "develop": "rollup -c rollup.config.js -w",
+    "test": "jest --watchAll"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^0.13.5",
+    "@tensorflow/tfjs-vis": "^0.3.0",
+    "color": "^3.1.0",
+    "papaparse": "^4.6.2",
+    "vega": "^4.3.0",
+    "vega-view": "^3.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@types/node": "^10.12.10",
+    "gh-pages": "^2.0.1",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.1.6"
+  },
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^0.13.5"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+import * as tf from '@tensorflow/tfjs';
+
+const data = (data: any[]): tf.Tensor2D | undefined => {
+  return data.reduce((data: tf.Tensor2D | undefined, datum: any) => {
+    return tf.tidy(() => {
+      if (data === undefined) {
+        return tf.keep(datum);
+      }
+
+      const old = data;
+      const newData = tf.keep(old.concat(datum, 0));
+
+      old.dispose();
+      datum.dispose();
+
+      return newData;
+    });
+  }, undefined);
+};
+
+export default data;
