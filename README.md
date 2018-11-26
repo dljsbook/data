@@ -1,4 +1,4 @@
-# Deep Learning with Javascript | Datasets
+# Data | Deep Learning with Javascript
 
 ![Travis Badge](https://travis-ci.com/dljsbook/datasets.svg?branch=master)
 
