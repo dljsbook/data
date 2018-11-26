@@ -1,10 +1,10 @@
 {
-  "name": "@dljsbook/datasets",
+  "name": "@dljsbook/data",
   "version": "0.2.0",
-  "description": "Datasets",
+  "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
-  "repository": "https://github.com/dljsbook/datasets",
+  "repository": "https://github.com/dljsbook/data",
   "main": "dist/index.js",
   "scripts": {
     "deploy": "gh-pages -d data",
