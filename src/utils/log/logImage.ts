@@ -5,7 +5,7 @@ import {
 
 type IProps = (src: string, props?: IOptions) => void;
 
-const logImage: IProps = (src, { width, height } = {}) => {
+const logImage: IProps = (src, { width, height, name } = {}) => {
   const img = new Image();
   img.src = src;
   img.onload = () => {

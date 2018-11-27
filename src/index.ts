@@ -5,3 +5,5 @@ export { default as Clusters } from './Clusters';
 export { default as Circles } from './Circles';
 export { default as Swirl } from './Swirl';
 export { default as BostonHousing } from './BostonHousing';
+export { default as ImageNet } from './ImageNet';
+export { default as COCO } from './COCO';
