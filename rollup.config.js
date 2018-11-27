@@ -9,6 +9,7 @@ export default {
   },
   plugins: [
     typescript(),
+    // uglify(),
   ],
   external: [
     '@tensorflow/tfjs',
