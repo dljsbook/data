@@ -6,7 +6,7 @@ type IPoints = {
   color: any;
 }[];
 
-const schema = ({ width, height, values }) => ({
+const schema = ({ width, height, values, showAxes, marks }) => ({
   "$schema": "https://vega.github.io/schema/vega/v4.json",
   width,
   height,
@@ -38,24 +38,25 @@ const schema = ({ width, height, values }) => ({
     }
   ],
 
-  "axes": [
-    {
-      "scale": "x",
-      "grid": true,
-      "domain": false,
-      "orient": "bottom",
-      "tickCount": 5,
-    },
-    {
-      "scale": "y",
-      "grid": true,
-      "domain": false,
-      "orient": "left",
-    }
-  ],
+  ...(showAxes !== false ? {
+    "axes": [
+      {
+        "scale": "x",
+        "grid": true,
+        "domain": false,
+        "orient": "bottom",
+        "tickCount": 5,
+      },
+      {
+        "scale": "y",
+        "grid": true,
+        "domain": false,
+        "orient": "left",
+      }
+    ],
+  } : {}),
 
-
-  "marks": [
+  "marks": marks || [
     {
       "name": "marks",
       "type": "symbol",
@@ -75,22 +76,24 @@ const schema = ({ width, height, values }) => ({
   ]
 });
 
-const makeImage = async (points: IPoints, width: number, height: number) => {
+const makeImage = async (points: IPoints, width: number, height: number, options: any) => {
   const values = points.map(value => ({
     ...value,
     stroke: value.color,
-    fill: value.color.fade(0.5),
+    fill: value.color,
+    // fill: value.color.fade(0.5),
   }));
   const view = new vega.View(vega.parse(schema({
     width,
     height,
     values,
+    ...options,
   }))).renderer('none').initialize();
   return await view.toImageURL('png');
 };
 
-const makeScatter = async (points: IPoints, width: number, height: number) => {
-  const img = await makeImage(points, width, height);
+const makeScatter = async (points: IPoints, width: number, height: number, options: any = {}) => {
+  const img = await makeImage(points, width, height, options);
   return img;
 }
 

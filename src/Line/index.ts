@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import Dataset from '../Dataset';
 import makeChart from './makeChart';
 import log from '../utils/log';
+import getAtStep from '../utils/getAtStep';
 // import data from '../utils/data';
 
 interface ILineProps {
@@ -13,7 +14,7 @@ interface ILineProps {
 }
 
 const getY = (x: number, slope: number, intercept: number) => slope * x + intercept;
-const getX = (step: number, num: number, start: number, end: number) => start + ((end - start) * step / (num - 1));
+// const getX = (step: number, num: number, start: number, end: number) => start + ((end - start) * step / (num - 1));
 const getTensor = (points: number[], num: number): tf.Tensor2D => tf.tensor2d(points, [num, 1]);
 
 class Line extends Dataset {
@@ -45,7 +46,7 @@ class Line extends Dataset {
     this.init({ num });
     const points = [];
     for (let step = 0; step < this.num; step++) {
-      const x = getX(step, this.num, this.start, this.end);
+      const x = getAtStep(step, this.num, this.start, this.end);
       const y = getY(x, this.slope, this.intercept);
       points.push([x, y]);
     }

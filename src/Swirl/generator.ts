@@ -1,25 +1,21 @@
 import getRandom from '../utils/getRandom';
 
-interface IGeneratorProps {
-  noise: number;
-  num: number;
-  polarity: POLARITY;
-  range?: [number, number];
-}
-
-export enum POLARITY {
-  POS,
-  NEG,
-}
+import {
+  POLARITY,
+  IPoint,
+  IRange,
+  IGeneratorFn,
+} from '../NonLinear';
 
 const withNoise = (point, noise) => point + getRandom(0 - noise / 2, noise / 2);
 
-const getDot = ({
+const getPoint = ({
   noise,
   range,
   polarity,
+  getX,
 }) => {
-  const degree = getRandom(range[0], range[1]);
+  const degree = getX(range);
   const radius = degree;
   const mult = polarity === POLARITY.POS ? 1 : -1;
   const x = withNoise(Math.sin(degree) * radius * mult, noise);
@@ -31,18 +27,16 @@ const getDot = ({
   };
 }
 
-const generator = ({
-  num,
-  noise,
-  range = [0, Math.PI / 2 * 7],
-  polarity,
-}: IGeneratorProps) => {
-  const dots = [];
+const defaultRange: IRange = [0, Math.PI / 2 * 7];
 
-  for (let i = 0; i < num; i++) {
-    dots.push(getDot({ polarity, noise, range }));
-  }
-  return dots;
-};
+export const positiveGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+  range,
+  polarity: POLARITY.POS,
+  ...props,
+});
 
-export default generator;
+export const negativeGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+  range,
+  polarity: POLARITY.NEG,
+  ...props,
+});

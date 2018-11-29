@@ -7,5 +7,5 @@ export interface IOptions {
   height?: number;
 
   name?: string;
+  target?: HTMLElement;
 }
-

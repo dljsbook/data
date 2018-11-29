@@ -5,7 +5,7 @@ import {
 
 type IProps = (src: string, props?: IOptions) => void;
 
-const logImage: IProps = (src, { width, height, name } = {}) => {
+const logImage: IProps = (src, { width, height, name, target } = {}) => {
   const img = new Image();
   img.src = src;
   img.onload = () => {
@@ -24,7 +24,9 @@ const logImage: IProps = (src, { width, height, name } = {}) => {
       display: 'block',
       color: 'transparent',
     };
-    if (tfvis) {
+    if (target) {
+      target.appendChild(img);
+    } else if (tfvis) {
       const surface = tfvis.visor().surface({
         name: name || 'Image',
         tab: 'Console',

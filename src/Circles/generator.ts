@@ -1,18 +1,19 @@
 import getRandom from '../utils/getRandom';
 
-interface IGeneratorProps {
-  radius: number;
-  noise: number;
-  num: number;
-  range?: [number, number];
-}
+import {
+  POLARITY,
+  IPoint,
+  IRange,
+  IGeneratorFn,
+} from '../NonLinear';
 
-const getDot = ({
+const getPoint = ({
   noise,
   range,
   radius,
+  getX,
 }) => {
-  const degree = getRandom(range[0], range[1]);
+  const degree = getX(range);
   const x = Math.sin(degree) * radius + getRandom(0 - noise / 2, noise / 2);
   const y = Math.cos(degree) * radius + getRandom(0 - noise / 2, noise / 2);
 
@@ -22,18 +23,16 @@ const getDot = ({
   };
 }
 
-const generator = ({
-  radius,
-  num,
-  noise,
-  range = [0, Math.PI * 2],
-}: IGeneratorProps) => {
-  const dots = [];
+const defaultRange: IRange = [0, Math.PI * 2];
 
-  for (let i = 0; i < num; i++) {
-    dots.push(getDot({ radius, noise, range }));
-  }
-  return dots;
-};
+export const positiveGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+  range,
+  radius: 1,
+  ...props,
+});
 
-export default generator;
+export const negativeGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+  range,
+  radius: 0.5,
+  ...props,
+});

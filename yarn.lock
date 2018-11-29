@@ -2121,7 +2121,7 @@ vega-lib@4.3.0, vega-lib@^4.3.0:
     vega-voronoi "^3.0.0"
     vega-wordcloud "^3.0.0"
 
-"vega-lite@^3.0.0-rc8 || ^2.6.0":
+vega-lite@^3.0.0-rc8, "vega-lite@^3.0.0-rc8 || ^2.6.0":
   version "3.0.0-rc8"
   resolved "https://registry.yarnpkg.com/vega-lite/-/vega-lite-3.0.0-rc8.tgz#84cb71da1a7d91829279b5ea37f3677c72a7fb1e"
   integrity sha512-lvD3KAyBI4OFi4EGauRLEuy+XO55klyFAuRcyrCcNfIkvLZjQtVQw//tg7bytDX5IfY//Pwv8zdlFH25Yx2R3A==

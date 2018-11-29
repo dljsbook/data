@@ -6,8 +6,10 @@ import {
 
 type IProps = (data: ITable, props?: IOptions) => void;
 
-const logTable: IProps = (data, { name } = {}) => {
-  if (tfvis) {
+const logTable: IProps = (data, { name, target } = {}) => {
+  if (target) {
+    target.append(JSON.stringify(data));
+  } else if (tfvis) {
     const surface = tfvis.visor().surface({
       name: name || 'Table',
       tab: 'Console',

@@ -1,20 +1,24 @@
 import getRandom from '../utils/getRandom';
 
-export enum POLARITY {
-  POS,
-  NEG,
-}
+import {
+  POLARITY,
+  IPoint,
+  IRange,
+  IGeneratorFn,
+} from '../NonLinear';
 
 const K = 2;
 const A = 7 * K;
 
 const parabola = ({ a, h, k, x }) => (a * Math.pow((x - h), 2)) + k;
-const getDot = ({
+const getPoint = ({
   fn,
   noise,
   range,
-}) => {
-  const x = getRandom(range[0], range[1]);
+  getX,
+}): IPoint => {
+  const x = getX(range);
+
   const radius = getRandom(noise);
   const theta = getRandom(Math.PI * 2);
 
@@ -24,43 +28,32 @@ const getDot = ({
   };
 }
 
-const getDotType = {
-  [POLARITY.POS]: (noise, range = [0, 2 / 3]) => getDot({
-    fn: x => parabola({ a: -1 * A, h: 1 / 3, k: K - 1, x}),
-    noise,
-    range,
-  }),
-  [POLARITY.NEG]: (noise, range = [1 / 3, 1]) => getDot({
-    fn: x => parabola({ a: A, h: 2 / 3, k: -1, x}),
-    noise,
-    range,
-  }),
+interface IMakeGeneratorProps {
+  defaultRange: IRange;
+  a: number;
+  h: number;
+  k: number;
 }
 
-const getRandomType = () => Math.random() >= 0.5 ? POLARITY.POS : POLARITY.NEG;
+const makeGenerator = ({
+  defaultRange,
+  ...rest
+}: IMakeGeneratorProps): IGeneratorFn => (range = defaultRange, props) => getPoint({
+ fn: x => parabola({ x, ...rest }),
+ range,
+ ...props,
+});
 
-interface IGeneratorProps {
-  type: POLARITY;
-  noise: number;
-  num: number;
-  range?: [number, number];
-}
+export const positiveGenerator = makeGenerator({
+  defaultRange: [0, 2 / 3],
+  a: -1 * A,
+  h: 1 / 3,
+  k: K - 1,
+});
 
-const generator = ({
-  type,
-  num,
-  noise,
-  range,
-}: IGeneratorProps) => {
-  const dots = [];
-
-  for (let i = 0; i < num; i++) {
-    if (type === undefined) {
-      type = getRandomType();
-    }
-    dots.push(getDotType[type](noise, range));
-  }
-  return dots;
-};
-
-export default generator;
+export const negativeGenerator = makeGenerator({
+  defaultRange: [1 / 3, 1],
+  a: A,
+  h: 2 / 3,
+  k: -1,
+});
