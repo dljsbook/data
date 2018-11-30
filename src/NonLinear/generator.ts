@@ -16,6 +16,14 @@ interface IGeneratorProps {
   fn: Function;
 }
 
+const makeGetX = (random, step, num) => (range) => {
+  if (random !== false) {
+    return getRandom(range[0], range[1]);
+  }
+
+  return getAtStep(step, num, range[0], range[1]);
+};
+
 const generator = ({
   type,
   num,
@@ -24,27 +32,21 @@ const generator = ({
   random,
   fn,
 }: IGeneratorProps) => {
-  const dots = [];
+  const points = [];
 
   for (let step = 0; step < num; step++) {
     if (type === undefined) {
       type = getRandomType();
     }
 
-    const getX = (range) => {
-      if (random !== false) {
-        return getRandom(range[0], range[1]);
-      }
-
-      return getAtStep(step, num, range[0], range[1]);
-    };
-
-    dots.push(fn(range, {
+    points.push(fn(range, {
       noise,
-      getX,
+      getX: makeGetX(random, step, num),
+      num,
+      step,
     }));
   }
-  return dots;
+  return points;
 };
 
 export default generator;

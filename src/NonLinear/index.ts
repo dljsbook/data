@@ -11,7 +11,7 @@ export enum POLARITY {
 }
 
 export interface INonLinearProps {
-  num?: number;
+  num?: number|number[];
   noise?: number;
 }
 
@@ -23,6 +23,8 @@ export type IPoint = {
 export type IGeneratorProps = {
   noise: number;
   getX: Function;
+  num: number;
+  step: number;
 }
 
 export type IRange = [number, number];
@@ -30,7 +32,7 @@ export type IRange = [number, number];
 export type IGeneratorFn = (range: IRange, props: IGeneratorProps) => IPoint;
 
 class NonLinear extends Dataset {
-  private num = 200;
+  private num:number|number[] = 200;
   private noise = 0.1;
   private generators: {
     [index: string]: IGeneratorFn;
@@ -55,7 +57,7 @@ class NonLinear extends Dataset {
   registerGenerator = (polarity: POLARITY, fn: IGeneratorFn) => this.generators[polarity] = fn;
   setName = (name: string) => this.name = name;
 
-  get = (num?: number, { random }: { random: boolean } = { random: true }) => {
+  get = (num?: number|number[], { random }: { random: boolean } = { random: true }) => {
     this.init({
       num,
     });
@@ -65,7 +67,7 @@ class NonLinear extends Dataset {
       POLARITY.NEG,
     ].reduce((arr, type, index) => (arr || []).concat(generator({
       type,
-      num: this.num / 2,
+      num: Array.isArray(this.num) ? this.num[index] : this.num / 2,
       noise: this.noise,
       random,
       fn: this.generators[type],
@@ -75,12 +77,14 @@ class NonLinear extends Dataset {
       color: COLORS[index],
     }))), []);
 
-    const data = tf.tensor2d(points.map(({ x, y }) => [ x, y ]), [this.num, 2], 'float32');
-    const labels = tf.tensor1d(points.map(({ index }) => index), 'float32');
+    const dim = Array.isArray(this.num) ? this.num.reduce((sum, n) => sum + n, 0) : this.num;
+
+    // const data = tf.tensor2d(points.map(({ x, y }) => [ x, y ]), [dim, 2], 'float32');
+    // const labels = tf.tensor1d(points.map(({ index }) => index), 'float32');
 
     return {
-      data,
-      labels,
+      // data,
+      // labels,
       print: async (target?: HTMLElement, chartOptions?: any) => {
         const width = 480;
         const height = 200;

@@ -7,19 +7,39 @@ import {
   IGeneratorFn,
 } from '../NonLinear';
 
+let counter = 0;
+
+const squish = (i: number, source: [number, number], target: [number, number]) => {
+  const percent = (i - source[0]) / (source[1] - source[0]);
+  return target[0] + percent * (target[1] - target[0]);
+};
+
+const pad = (n: number, range: [number, number]) => {
+  if (n >= 0) {
+    return squish(n, [0, 1], range);
+  }
+
+  return squish(n, [-1, 0], [range[1] * -1, range[0] * -1]);
+};
+
+const PADDING = 0.15;
+const padding: [number, number] = [PADDING, 1 - PADDING];
+
 const getPoint = ({
   noise,
   range,
   getX,
   getY,
+  num,
+  step,
 }) => {
-  const x = getRandom(range[0], range[1]);
+  const x = getX(range);
   const y = getRandom(0, 1) * getY(x);
   const radius = getRandom(noise);
 
   return {
-    x,
-    y,
+    x: pad(x, padding),
+    y: pad(y, padding),
   };
 }
 
