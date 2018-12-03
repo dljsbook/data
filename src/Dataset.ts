@@ -6,29 +6,29 @@ import {
 } from './config';
 
 interface IProps {
-  classes?: number;
+  numberOfClasses?: number;
 }
 
 class Dataset {
   private callbacks: Function[] = [];
   protected loaded: boolean = true;
-  protected classes?: number;
+  protected numberOfClasses?: number;
 
   constructor(props: IProps = {}) {
-    this.classes = props.classes;
+    this.numberOfClasses = props.numberOfClasses;
   }
 
   oneHot = (labelIndex: number|number[]|Uint8Array, classLength?: number) => {
-    const classes = classLength || this.classes;
-    if (classes <= 1) {
+    const numberOfClasses = classLength || this.numberOfClasses;
+    if (numberOfClasses <= 1) {
       throw new Error('You must provide more than 1 class to oneHot');
     }
 
     if (typeof labelIndex === 'number') {
-      return oneHot([labelIndex], classes);
+      return oneHot([labelIndex], numberOfClasses);
     }
 
-    return oneHot((labelIndex as any), classes);
+    return oneHot((labelIndex as any), numberOfClasses);
   }
 
   ready = (fn = () => {}) => new Promise(resolve => {

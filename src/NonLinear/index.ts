@@ -5,31 +5,19 @@ import makeChart from '../utils/graphs/makeScatter';
 import { COLORS } from '../config';
 import generator from './generator';
 
-export enum POLARITY {
-  POS,
-  NEG,
-}
+import {
+  POLARITY,
+  IPoint,
+  IGeneratorProps,
+  IRange,
+  IGeneratorFn,
+} from './types';
 
 export interface INonLinearProps {
   num?: number|number[];
   noise?: number;
 }
 
-export type IPoint = {
-  x: number;
-  y: number;
-};
-
-export type IGeneratorProps = {
-  noise: number;
-  getX: Function;
-  num: number;
-  step: number;
-}
-
-export type IRange = [number, number];
-
-export type IGeneratorFn = (range: IRange, props: IGeneratorProps) => IPoint;
 
 class NonLinear extends Dataset {
   private num:number|number[] = 200;
@@ -112,3 +100,11 @@ class NonLinear extends Dataset {
 }
 
 export default NonLinear;
+
+export {
+  POLARITY,
+  // IPoint,
+  // IGeneratorProps,
+  // IRange,
+  // IGeneratorFn,
+} from './types';

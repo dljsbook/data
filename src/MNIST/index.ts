@@ -26,7 +26,7 @@ class MNIST extends Dataset {
 
   constructor() {
     super({
-      classes: CLASSES,
+      numberOfClasses: CLASSES,
     });
 
     this.load(async () => {

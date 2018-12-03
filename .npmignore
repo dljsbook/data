@@ -7,3 +7,4 @@ yarn-error.log
 data
 example
 .cache
+.travis.yml

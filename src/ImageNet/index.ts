@@ -23,6 +23,8 @@ const rand = (arr: any[] = []) => arr[getRandomIndex(arr)];
 
 class ImageNet extends Dataset {
   private data: IData;
+  private manifest: string[];
+  private manifestIndex: number = 0;
 
   constructor() {
     super();
@@ -32,39 +34,32 @@ class ImageNet extends Dataset {
     });
   }
 
+  loadNextImages = async () => {
+    if (!this.manifest) {
+      this.manifest = await this.loadFromURL(DATA.imagesManifest, 'json');
+    }
+
+    const nextURL = this.manifest[this.manifestIndex];
+
+    if (!nextURL) {
+      throw new Error('No more images to load');
+    }
+
+    const images = await this.loadFromURL(DATA.getImages(nextURL), 'json');
+
+    this.manifestIndex++;
+
+    return images;
+  }
+
   loadDataset = async () => {
-    const images = await this.loadFromURL(DATA.images, 'json');
+    const images = await this.loadNextImages();
     const labels = await this.loadFromURL(DATA.labels, 'json');
 
     this.data = {
       images,
       labels,
     };
-
-    // const numbers = {};
-
-    // for (var i = 0; i < (labels.length); i++) {
-    //   const label = labels[i];
-    //   if (label < 0 || label > 9) {
-    //     throw new Error(`bad MNIST label: ${label}`);
-    //   }
-    //   const start = (i * IMAGE_SIZE);
-
-    //   if (!numbers[label]) {
-    //     numbers[label] = [];
-    //   }
-
-    //   numbers[label].push(i);
-    // }
-
-    // this.indices[set] = numbers;
-
-    // const n = data.length / IMAGE_SIZE;
-
-    // this.data[set] = {
-    //   data: tf.tensor4d(data, [n, 28, 28, 1], 'int32'),
-    //   labels: this.oneHot(labels),
-    // };
   }
 
   getRandomId = () => {
@@ -115,7 +110,7 @@ class ImageNet extends Dataset {
   }
 }
 
-const loadImage = (src: string) => new Promise((resolve, reject) => {
+const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
   const img = new Image();
   img.src = src;
   img.crossOrigin = '';

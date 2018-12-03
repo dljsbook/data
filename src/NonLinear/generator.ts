@@ -1,9 +1,7 @@
 import getRandom from '../utils/getRandom';
 import getAtStep from '../utils/getAtStep';
 
-import {
-  POLARITY,
-} from '../NonLinear';
+import { POLARITY } from './types';
 
 const getRandomType = () => Math.random() >= 0.5 ? POLARITY.POS : POLARITY.NEG;
 
