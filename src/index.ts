@@ -7,4 +7,7 @@ export { default as Circles } from './Circles';
 export { default as Swirl } from './Swirl';
 export { default as BostonHousing } from './BostonHousing';
 export { default as ImageNet } from './ImageNet';
-export { default as COCO } from './COCO';
+export { default as COCO, BUCKET as COCO_BUCKET } from './COCO';
+
+export { default as log } from './utils/log';
+export { COLORS } from './config';

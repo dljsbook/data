@@ -33,7 +33,7 @@ class NonLinear extends Dataset {
     this.init(props);
   }
 
-  init = (props: INonLinearProps) => {
+  init = (props: INonLinearProps = {}) => {
     if (props.num !== undefined) {
       this.num = props.num;
     }

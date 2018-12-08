@@ -5,6 +5,7 @@ import {
 } from './config';
 // import Image from '../utils/Image';
 import log from '../utils/log';
+import rand from '../utils/rand';
 
 interface IImageNetProps {
 }
@@ -17,9 +18,6 @@ type IData = {
     [index: string]: string;
   };
 };
-
-const getRandomIndex = (arr: any[] = []) => Math.floor(Math.random() * (arr.length - 1));
-const rand = (arr: any[] = []) => arr[getRandomIndex(arr)];
 
 class ImageNet extends Dataset {
   private data: IData;
@@ -72,7 +70,8 @@ class ImageNet extends Dataset {
 
   getImage = async (labelId: string = this.getRandomId()) => {
     if (!this.loaded) {
-      throw new Error('Dataset not loaded yet, call ready()');
+      await this.ready();
+      // throw new Error('Dataset not loaded yet, call ready()');
     }
 
     const label = this.data.labels[labelId];
@@ -85,8 +84,8 @@ class ImageNet extends Dataset {
     return {
       image,
       label,
-      print: () => {
-        log(src, { name: label });
+      print: (target) => {
+        log(src, { target, name: label });
       },
     };
   }

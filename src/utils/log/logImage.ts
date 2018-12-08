@@ -24,6 +24,7 @@ const logImage: IProps = (src, { width, height, name, target } = {}) => {
       display: 'block',
       color: 'transparent',
     };
+
     if (target) {
       target.appendChild(img);
     } else if (tfvis) {
