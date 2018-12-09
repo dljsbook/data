@@ -19,7 +19,7 @@ class Image {
     this.name = name;
   }
 
-  print(target: HTMLElement | undefined, { invert }: IPrintProps) {
+  print(target: HTMLElement | undefined, { invert }: IPrintProps = {}) {
     if (!this.dataURL) {
       if (!this.canvas) {
         this.canvas = document.createElement('canvas');
