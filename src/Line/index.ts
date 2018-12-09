@@ -55,11 +55,11 @@ class Line extends Dataset {
     return {
       data,
       labels,
-      print: async () => {
+      print: async (target?: HTMLElement) => {
         const width = 480;
         const height = 200;
         const chart = await makeChart(points, width, height);
-        log(chart, { width, height: height + 40, name: 'Line' });
+        log(chart, { target, height: height + 40, name: 'Line' });
       },
     };
   }
