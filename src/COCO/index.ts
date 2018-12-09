@@ -240,6 +240,7 @@ const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Pro
 };
 
 const print = async (img, anns) => {
+
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;

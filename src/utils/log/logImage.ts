@@ -1,7 +1,12 @@
-import * as tfvis from '@tensorflow/tfjs-vis';
 import {
   IOptions,
 } from './types';
+// import * as tfvis from '@tensorflow/tfjs-vis';
+let tfvis;
+try {
+  tfvis = require('@tensorflow/tfjs-vis');
+} catch(err) {
+}
 
 type IProps = (src: string, props?: IOptions) => void;
 
