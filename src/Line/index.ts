@@ -13,6 +13,11 @@ interface ILineProps {
   intercept?: number;
 }
 
+interface IPrintProps {
+  width?: number;
+  height?: number;
+}
+
 const getY = (x: number, slope: number, intercept: number) => slope * x + intercept;
 // const getX = (step: number, num: number, start: number, end: number) => start + ((end - start) * step / (num - 1));
 const getTensor = (points: number[], num: number): tf.Tensor2D => tf.tensor2d(points, [num, 1]);
@@ -55,11 +60,11 @@ class Line extends Dataset {
     return {
       data,
       labels,
-      print: async (target?: HTMLElement) => {
-        const width = 480;
-        const height = 200;
+      print: async (target?: HTMLElement, { width, height }: IPrintProps = {}) => {
+        width = width || 480;
+        height = height || 240;
         const chart = await makeChart(points, width, height);
-        log(chart, { target, height: height + 40, name: 'Line' });
+        log(chart, { target, width, height, name: 'Line' });
       },
     };
   }

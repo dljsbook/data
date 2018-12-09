@@ -1,4 +1,3 @@
-// import * as tfvis from '@tensorflow/tfjs-vis';
 import {
   ITable,
   IOptions,

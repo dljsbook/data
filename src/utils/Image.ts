@@ -1,5 +1,9 @@
 import log from './log';
 
+interface IPrintProps {
+  invert?: boolean;
+}
+
 class Image {
   private label: number;
   private data: any;
@@ -15,7 +19,7 @@ class Image {
     this.name = name;
   }
 
-  print() {
+  print(target: HTMLElement | undefined, { invert }: IPrintProps) {
     if (!this.dataURL) {
       if (!this.canvas) {
         this.canvas = document.createElement('canvas');
@@ -27,7 +31,7 @@ class Image {
       const data = this.data.dataSync();
       const pixelValues = [];
       for (let i = 0; i < data.length; i++) {
-        const pixel = data[i];
+        const pixel = invert ? 255 - data[i] : data[i];
         pixelValues.push(pixel, pixel, pixel, 255);
       }
       const a = new Uint8ClampedArray(pixelValues);
@@ -37,7 +41,7 @@ class Image {
       this.dataURL = this.canvas.toDataURL('image/png');
     }
 
-    log(this.dataURL, { name: this.name });
+    log(this.dataURL, { target, name: this.name });
   }
 }
 
