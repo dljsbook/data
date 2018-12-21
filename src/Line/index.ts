@@ -49,7 +49,8 @@ class Line extends Dataset {
 
   get = (num?: number) => {
     this.init({ num });
-    const points = [];
+
+    const points: [number, number][] = [];
     for (let step = 0; step < this.num; step++) {
       const x = getAtStep(step, this.num, this.start, this.end);
       const y = getY(x, this.slope, this.intercept);

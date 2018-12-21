@@ -7,9 +7,6 @@ import {
 import log from '../utils/log';
 import rand from '../utils/rand';
 
-interface IImageNetProps {
-}
-
 type IData = {
   images: {
     [index: string]: string[];
@@ -84,14 +81,16 @@ class ImageNet extends Dataset {
     return {
       image,
       label,
-      print: (target) => {
+      print: (target?: HTMLElement) => {
         log(src, { target, name: label });
       },
     };
   }
 
   translatePrediction = (prediction: tf.Tensor, num = 5) => {
-    const preds = [...prediction.dataSync()].reduce((obj, el, index) => ({
+    const syncedPreds = prediction.dataSync();
+    console.log('check that this works');
+    const preds = Array.from(syncedPreds).reduce((obj, el, index) => ({
       ...obj,
       [el]: index,
     }), {});

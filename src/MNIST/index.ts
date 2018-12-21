@@ -4,7 +4,6 @@ import Image from '../utils/Image';
 
 import {
   IMAGE_SIZE,
-  OFFSET,
   CLASSES,
   DATA,
 } from './config';
@@ -39,7 +38,7 @@ class MNIST extends Dataset {
     const loadedData = await this.loadFromURL(DATA[set].images);
     const data = loadedData.slice(16, loadedData.length);
     const loadedLabels = await this.loadFromURL(DATA[set].labels);
-    const labels = loadedLabels.slice(8, loadedLabels.length - 8);
+    const labels = loadedLabels.slice(8, loadedLabels.length);
 
     const numbers = {};
 
@@ -48,7 +47,7 @@ class MNIST extends Dataset {
       if (label < 0 || label > 9) {
         throw new Error(`bad MNIST label: ${label}`);
       }
-      const start = (i * IMAGE_SIZE);
+      // const start = (i * IMAGE_SIZE);
 
       if (!numbers[label]) {
         numbers[label] = [];
@@ -63,6 +62,7 @@ class MNIST extends Dataset {
 
     this.data[set] = {
       data: tf.tensor4d(data, [n, 28, 28, 1], 'int32'),
+      // labels,
       labels: this.oneHot(labels),
     };
   }
@@ -76,13 +76,13 @@ class MNIST extends Dataset {
     }
     const indices = this.indices[set][label];
     const index = indices[Math.floor(Math.random()*indices.length)];
-    const start = (index * IMAGE_SIZE);
+    // const start = (index * IMAGE_SIZE);
     const pixels = this.data[set].data.slice(index, 1);
     if (pixels.size !== (28*28)) {
       throw new Error(`error at index: ${index} and label: ${label}, pixel length: ${pixels.size}`);
     }
 
-    return new Image(pixels, label, SIDE, { name: 'MNIST' });
+    return new Image(pixels, label, SIDE, 'MNIST');
   }
 
   get = (set:string, amount: number) => {

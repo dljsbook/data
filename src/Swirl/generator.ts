@@ -5,11 +5,21 @@ import {
   IPoint,
   IRange,
   IGeneratorFn,
+  IGetX,
 } from '../NonLinear';
 
-const withNoise = (point, noise) => point + getRandom(0 - noise / 2, noise / 2);
+const withNoise = (point: number, noise: number) => point + getRandom(0 - noise / 2, noise / 2);
 
-const getPoint = ({
+type IGetPointProps = {
+  noise: number;
+  range: IRange;
+  getX: IGetX;
+  polarity: POLARITY;
+};
+
+type IGetPoint = (props: IGetPointProps) => IPoint;
+
+const getPoint: IGetPoint = ({
   noise,
   range,
   polarity,
@@ -29,14 +39,24 @@ const getPoint = ({
 
 const defaultRange: IRange = [0, Math.PI / 2 * 7];
 
-export const positiveGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const positiveGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+}) => getPoint({
   range,
   polarity: POLARITY.POS,
-  ...props,
+
+  noise,
+  getX,
 });
 
-export const negativeGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const negativeGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+}) => getPoint({
   range,
   polarity: POLARITY.NEG,
-  ...props,
+
+  noise,
+  getX,
 });

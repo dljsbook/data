@@ -8,9 +8,11 @@ export type IPoint = {
   y: number;
 };
 
+export type IGetX = (range: IRange) => number;
+
 export type IGeneratorProps = {
   noise: number;
-  getX: Function;
+  getX: IGetX;
   num: number;
   step: number;
 }

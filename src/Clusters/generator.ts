@@ -1,13 +1,16 @@
 import getRandom from '../utils/getRandom';
 
 import {
-  POLARITY,
+  // POLARITY,
   IPoint,
   IRange,
   IGeneratorFn,
+  IGetX,
 } from '../NonLinear';
 
-let counter = 0;
+type IGetY = (x: number) => number;
+
+// let counter = 0;
 
 const squish = (i: number, source: [number, number], target: [number, number]) => {
   const percent = (i - source[0]) / (source[1] - source[0]);
@@ -25,7 +28,18 @@ const pad = (n: number, range: [number, number]) => {
 const PADDING = 0.15;
 const padding: [number, number] = [PADDING, 1 - PADDING];
 
-const getPoint = ({
+type IGetPointProps = {
+  noise: number;
+  range: IRange;
+  getX: IGetX;
+  getY: IGetY;
+  num: number;
+  step: number;
+};
+
+type IGetPoint = (props: IGetPointProps) => IPoint;
+
+const getPoint: IGetPoint = ({
   noise,
   range,
   getX,
@@ -35,7 +49,6 @@ const getPoint = ({
 }) => {
   const x = getX(range);
   const y = getRandom(0, 1) * getY(x);
-  const radius = getRandom(noise);
 
   return {
     x: pad(x, padding),
@@ -45,14 +58,30 @@ const getPoint = ({
 
 const defaultRange: IRange = [-1, 1];
 
-export const positiveGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const positiveGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+  num,
+  step,
+}) => getPoint({
   range,
   getY: x => x < 0 ? 1 : -1,
-  ...props,
+  noise,
+  getX,
+  num,
+  step,
 });
 
-export const negativeGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const negativeGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+  num,
+  step,
+}) => getPoint({
   range,
   getY: x => x < 0 ? -1 : 1,
-  ...props,
+  noise,
+  getX,
+  num,
+  step,
 });

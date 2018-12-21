@@ -1,12 +1,20 @@
 import * as vega from 'vega';
 
-type IPoints = {
+type IScatterPoint = {
+  x: number;
+  y: number;
+  color: any;
+};
+
+interface ISchemaProps {
   width: number;
   height: number;
-  color: any;
-}[];
+  values?: any;
+  showAxes: boolean;
+  marks?: any[];
+}
 
-const schema = ({ width, height, values, showAxes, marks }) => ({
+const schema = ({ width, height, values, showAxes, marks }: ISchemaProps) => ({
   "$schema": "https://vega.github.io/schema/vega/v4.json",
   width,
   height,
@@ -18,24 +26,24 @@ const schema = ({ width, height, values, showAxes, marks }) => ({
   }],
 
   "scales": [
-    {
-      "name": "x",
-      "type": "linear",
-      "round": true,
-      "nice": true,
-      "zero": true,
-      "domain": {"data": "source", "field": "x"},
-      "range": "width"
-    },
-    {
-      "name": "y",
-      "type": "linear",
-      "round": true,
-      "nice": true,
-      "zero": true,
-      "domain": {"data": "source", "field": "y"},
-      "range": "height"
-    }
+    // {
+    //   "name": "x",
+    //   "type": 'linear',
+    //   "round": true,
+    //   "nice": true,
+    //   "zero": true,
+    //   "domain": {"data": "source", "field": "x"},
+    //   "range": "width"
+    // },
+    // {
+    //   "name": "y",
+    //   "type": 'linear',
+    //   "round": true,
+    //   "nice": true,
+    //   "zero": true,
+    //   "domain": {"data": "source", "field": "y"},
+    //   "range": "height"
+    // }
   ],
 
   ...(showAxes !== false ? {
@@ -44,14 +52,14 @@ const schema = ({ width, height, values, showAxes, marks }) => ({
         "scale": "x",
         "grid": true,
         "domain": false,
-        "orient": "bottom",
+        "orient": ('bottom' as vega.AxisOrient),
         "tickCount": 5,
       },
       {
         "scale": "y",
         "grid": true,
         "domain": false,
-        "orient": "left",
+        "orient": ('left' as vega.AxisOrient),
       }
     ],
   } : {}),
@@ -76,7 +84,7 @@ const schema = ({ width, height, values, showAxes, marks }) => ({
   ]
 });
 
-const makeImage = async (points: IPoints, width: number, height: number, options: any) => {
+const makeImage = async (points: IScatterPoint[], width: number, height: number, options: any) => {
   const values = points.map(value => ({
     ...value,
     stroke: value.color,
@@ -92,7 +100,7 @@ const makeImage = async (points: IPoints, width: number, height: number, options
   return await view.toImageURL('png');
 };
 
-const makeScatter = async (points: IPoints, width: number, height: number, options: any = {}) => {
+const makeScatter = async (points: IScatterPoint[], width: number, height: number, options: any = {}) => {
   const img = await makeImage(points, width, height, options);
   return img;
 }

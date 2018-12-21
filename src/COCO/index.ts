@@ -19,16 +19,6 @@ import {
 import log from '../utils/log';
 import rand from '../utils/rand';
 
-const getRounded = (width: number) => {
-  const rounded = width * 0.05;
-  if (rounded < 3) {
-    return 3;
-  } else if (rounded > 8) {
-    return 8;
-  }
-  return rounded;
-};
-
 const createShape = require('shape-drawing').createShape;
 
 const getRandomBucket = () => rand([
@@ -41,15 +31,17 @@ type Annotation = {
   bbox: [number, number, number, number];
 }
 
+type COCOImage = {
+  file: string,
+    anns: Annotation[],
+    h: number,
+    w: number,
+}
+
 type IData = {
   [index: string]: {
     images: {
-      [index: string]: {
-        file: string,
-        anns: Annotation[],
-        h: number,
-        w: number,
-      }[];
+      [index: string]: COCOImage[];
     };
     categories: {
       [index: string]: string;
@@ -59,9 +51,6 @@ type IData = {
     };
   }
 };
-
-interface ICOCOProps {
-}
 
 class COCO extends Dataset {
   private data: IData;
@@ -104,7 +93,7 @@ class COCO extends Dataset {
   }
 
   loadDataset = async (bucket: BUCKET) => {
-    const images = await this.loadNextImages(bucket);
+    const images: COCOImage[] = await this.loadNextImages(bucket);
     const categories = await this.loadFromURL(GET_CATEGORIES(bucket), 'json');
 
     const annotations = images.reduce((allAnns, { anns }, index) => (anns || []).reduce((obj, { cat }) => {
@@ -147,12 +136,14 @@ class COCO extends Dataset {
       await this.ready();
     }
 
-    if (labelId === undefined) {
-      labelId = this.getRandomLabel(bucket);
-    }
-
     if (imageId === undefined) {
-      imageId = rand(this.data[bucket].annotations[labelId]);
+      if (!labelId) {
+        labelId = this.getRandomLabel(bucket);
+      }
+
+      if (labelId) {
+        imageId = rand(this.data[bucket].annotations[labelId]);
+      }
     }
 
     const {
@@ -163,8 +154,8 @@ class COCO extends Dataset {
     const {
       file,
       anns,
-      h,
-      w,
+      // h,
+      // w,
     } = rand(Object.values(images));
 
     const src = `${DATAROOT}${GET_IMAGES(bucket, `data/${file}`)}`;
@@ -178,7 +169,7 @@ class COCO extends Dataset {
       [1],
       [416, 416],
     );
-    const annotations = anns.map(ann => ({
+    const annotations = anns.map((ann: Annotation) => ({
       ...ann,
       label: categories[ann.cat],
     }));
@@ -187,7 +178,7 @@ class COCO extends Dataset {
       src,
       image,
       annotations,
-      print: async (target) => {
+      print: async (target?: HTMLElement) => {
         const src = await print(img, annotations);
         log(src, { target, name: file });
       },
@@ -221,30 +212,37 @@ const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resol
   img.onerror = (err) => reject(err);
 });
 
-const crop = (img: tf.Tensor3D) => {
-  const size = Math.min(img.shape[0], img.shape[1]);
-  const centerHeight = img.shape[0] / 2;
-  const beginHeight = centerHeight - (size / 2);
-  const centerWidth = img.shape[1] / 2;
-  const beginWidth = centerWidth - (size / 2);
-  return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
-}
+// const crop = (img: tf.Tensor3D) => {
+//   const size = Math.min(img.shape[0], img.shape[1]);
+//   const centerHeight = img.shape[0] / 2;
+//   const beginHeight = centerHeight - (size / 2);
+//   const centerWidth = img.shape[1] / 2;
+//   const beginWidth = centerWidth - (size / 2);
+//   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
+// }
 
 // convert pixel data into a tensor
-const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Promise<tf.Tensor3D> => {
-  return tf.tidy(() => {
-    const croppedImage = crop(tf.image.resizeBilinear(img, dims));
-    return croppedImage;
-    // return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
-  });
+// const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Promise<tf.Tensor3D> => {
+//   return tf.tidy(() => {
+//     const croppedImage = crop(tf.image.resizeBilinear(img, dims));
+//     return croppedImage;
+//     // return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+//   });
+// };
+
+type IAnn = {
+  bbox: [number, number, number, number];
+  label: number | string;
 };
 
-const print = async (img, anns) => {
-
+const print = async (img: HTMLImageElement, anns: IAnn[]) => {
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
   const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Your browser does not support canvas');
+  }
   ctx.drawImage(img, 0, 0, img.width, img.height);
 
   const shape = createShape(ctx, {
@@ -254,7 +252,7 @@ const print = async (img, anns) => {
   anns.sort((a, b) => {
     return a[0] - b[0];
   }).forEach(({ bbox, label }, index) => {
-    const i = index;
+    // const i = index;
     const color = COLORS[index % COLORS.length];
     const dims = [
       ...bbox,
@@ -273,6 +271,11 @@ const print = async (img, anns) => {
       // boxWidth,
       windowWidth,
       windowHeight,
+    }: {
+      left: number;
+      top: number;
+      windowWidth: number;
+      windowHeight: number;
     }) => {
       const tooltipWidth = 150;
       const tooltipHeight = 30;
@@ -292,10 +295,10 @@ const print = async (img, anns) => {
         { x: left + arrowXCenter, y: top, },
       ];
 
-      let minX = null;
-      let minY = null;
-      let maxX = null;
-      let maxY = null;
+      let minX: null | number = null;
+      let minY: null | number = null;
+      let maxX: null | number = null;
+      let maxY: null | number = null;
 
       points.forEach(point => {
         if (minX === null || minX > point.x) {
@@ -313,19 +316,19 @@ const print = async (img, anns) => {
       });
 
       let bumpMinX = 0;
-      if (minX < 0) {
+      if (minX && minX < 0) {
         bumpMinX = 0 - minX;
       }
       let bumpMinY = 0;
-      if (minY < 0) {
+      if (minY && minY < 0) {
         bumpMinY = 0 - minY;
       }
       let bumpMaxX = 0;
-      if (maxX > windowWidth) {
+      if (maxX && maxX > windowWidth) {
         bumpMaxX = maxX - windowWidth;
       }
       let bumpMaxY = 0;
-      if (maxY > windowHeight) {
+      if (maxY && maxY > windowHeight) {
         bumpMaxY = 0 - maxY;
       }
 
@@ -354,7 +357,7 @@ const print = async (img, anns) => {
       .fill();
     ctx.font = '14px';
     ctx.fillStyle = 'black';
-    ctx.fillText(label, points[6] + 10, points[7] + 20);
+    ctx.fillText(`${label}`, points[6] + 10, points[7] + 20);
   });
 
   return canvas.toDataURL();

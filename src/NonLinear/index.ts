@@ -1,15 +1,15 @@
 import * as tf from '@tensorflow/tfjs';
 import Dataset from '../Dataset';
 import log from '../utils/log';
-import makeChart from '../utils/graphs/makeScatter';
+import makeScatter from '../utils/graphs/makeScatter';
 import { COLORS } from '../config';
 import generator from './generator';
 
 import {
   POLARITY,
   IPoint,
-  IGeneratorProps,
-  IRange,
+  // IGeneratorProps,
+  // IRange,
   IGeneratorFn,
 } from './types';
 
@@ -17,7 +17,6 @@ export interface INonLinearProps {
   num?: number|number[];
   noise?: number;
 }
-
 
 class NonLinear extends Dataset {
   private num:number|number[] = 200;
@@ -50,22 +49,37 @@ class NonLinear extends Dataset {
       num,
     });
 
+    const initialPoints: {
+      x: number;
+      y: number;
+      index: number;
+      color: any;
+    }[] = [];
+
     const points = [
       POLARITY.POS,
       POLARITY.NEG,
-    ].reduce((arr, type, index) => (arr || []).concat(generator({
-      type,
-      num: Array.isArray(this.num) ? this.num[index] : this.num / 2,
-      noise: this.noise,
-      random,
-      fn: this.generators[type],
-    }).map(point => ({
-      ...point,
-      index,
-      color: COLORS[index],
-    }))), []);
+    ].reduce((arr, type, index) => {
+      const fn: IGeneratorFn = this.generators[type];
+      const points: IPoint[] = generator({
+        type,
+        num: Array.isArray(this.num) ? this.num[index] : this.num / 2,
+        noise: this.noise,
+        random,
+        fn,
+      });
+      const newPoints = points.map(point => {
+        return {
+          ...point,
+          index,
+          color: COLORS[index],
+        };
+      });
 
-    const dim = Array.isArray(this.num) ? this.num.reduce((sum, n) => sum + n, 0) : this.num;
+      return (arr || []).concat(newPoints);
+    }, initialPoints);
+
+    // const dim = Array.isArray(this.num) ? this.num.reduce((sum, n) => sum + n, 0) : this.num;
 
     // const data = tf.tensor2d(points.map(({ x, y }) => [ x, y ]), [dim, 2], 'float32');
     // const labels = tf.tensor1d(points.map(({ index }) => index), 'float32');
@@ -75,15 +89,15 @@ class NonLinear extends Dataset {
       // labels,
       print: async (target?: HTMLElement, chartOptions?: any) => {
         const width = 480;
-        const height = 200;
-        const chart = await makeChart(points, width, height, chartOptions);
-        log(chart, { target, width, height: height + 40, name: this.name });
+        const height = 200 + 40;
+        const chart = await makeScatter(points, width, height, chartOptions);
+        log(chart, { target, width, height, name: this.name });
       }
     };
   }
 
   getForType = (type: POLARITY) => {
-    const point = generator({
+    const point: IPoint = generator({
       type,
       num: 1,
       noise: this.noise,
@@ -103,8 +117,9 @@ export default NonLinear;
 
 export {
   POLARITY,
-  // IPoint,
-  // IGeneratorProps,
-  // IRange,
-  // IGeneratorFn,
+  IPoint,
+  IGeneratorProps,
+  IRange,
+  IGeneratorFn,
+  IGetX,
 } from './types';

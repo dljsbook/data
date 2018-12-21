@@ -2,19 +2,13 @@ import {
   ITable,
   IOptions,
 } from './types';
-let tfvis;
-try {
-  tfvis = require('@tensorflow/tfjs-vis');
-} catch(err) {
-}
+import tfvis from '@tensorflow/tfjs-vis';
 
-type IProps = (data: ITable, props?: IOptions) => void;
+type IProps = (data: ITable, props: IOptions) => void;
 
 const buildRow = (data: any[]) => {
-  console.log('data', data);
   const row = document.createElement('tr');
   data.forEach(d => {
-    console.log('d', d);
     const td = document.createElement('td');
     td.innerHTML = d;
     row.appendChild(td);
@@ -22,7 +16,7 @@ const buildRow = (data: any[]) => {
   return row;
 };
 
-const buildTable = data => {
+const buildTable = (data: ITable) => {
   const table = document.createElement('table');
   const thead = document.createElement('thead');
   const keys = Object.keys(data[0]);

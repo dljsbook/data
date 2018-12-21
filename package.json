@@ -9,13 +9,14 @@
   "scripts": {
     "deploy": "gh-pages -d data",
     "prepublish": "yarn build",
-    "build": "rollup -c rollup.config.js",
-    "develop": "rollup -c rollup.config.js -w",
+    "clean": "rimraf dist",
+    "build": "tsc",
+    "develop": "tsc -w",
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "@tensorflow/tfjs-vis": "^0.4.0",
     "color": "^3.1.0",
-    "papaparse": "^4.6.2",
     "shape-drawing": "^1.3.0",
     "vega": "^4.3.0",
     "vega-lite": "^3.0.0-rc8",
@@ -24,20 +25,24 @@
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@tensorflow/tfjs": "^0.13.5",
-    "@tensorflow/tfjs-vis": "^0.3.0",
+    "@types/jest": "^23.3.10",
     "@types/node": "^10.12.10",
     "gh-pages": "^2.0.1",
+    "rimraf": "^2.6.2",
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-typescript": "^1.0.0",
+    "rollup-plugin-typescript2": "^0.18.1",
     "rollup-plugin-uglify": "^6.0.0",
+    "ts-jest": "^23.10.5",
     "tslib": "^1.9.3",
     "typescript": "^3.1.6"
   },
   "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.0"
+    "@tensorflow/tfjs": "^0.14.0",
+    "@tensorflow/tfjs-vis": "^0.4.0"
   },
   "jest": {
     "roots": [

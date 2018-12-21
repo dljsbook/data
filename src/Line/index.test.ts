@@ -1,4 +1,5 @@
-import line from './line';
+import 'ts-jest';
+import line from './index';
 
 test('that line generates 4 datapoints', () => {
   expect(line()).toEqual([

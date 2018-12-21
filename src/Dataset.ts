@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+// import * as tf from '@tensorflow/tfjs';
 import oneHot from './utils/oneHot';
 
 import {
@@ -19,7 +19,7 @@ class Dataset {
   }
 
   oneHot = (labelIndex: number|number[]|Uint8Array, classLength?: number) => {
-    const numberOfClasses = classLength || this.numberOfClasses;
+    const numberOfClasses: number = classLength || this.numberOfClasses || 0;
     if (numberOfClasses <= 1) {
       throw new Error('You must provide more than 1 class to oneHot');
     }
@@ -61,7 +61,7 @@ class Dataset {
     // return method(resp);
   }
 
-  load = async (fn) => {
+  load = async (fn?: () => void) => {
     this.loaded = false;
     if (fn) {
       await fn();

@@ -1,13 +1,22 @@
 import getRandom from '../utils/getRandom';
 
 import {
-  POLARITY,
   IPoint,
   IRange,
   IGeneratorFn,
+  IGetX,
 } from '../NonLinear';
 
-const getPoint = ({
+type IGetPointProps = {
+  noise: number;
+  range: IRange;
+  radius: number;
+  getX: IGetX;
+};
+
+type IGetPoint = (props: IGetPointProps) => IPoint;
+
+const getPoint: IGetPoint = ({
   noise,
   range,
   radius,

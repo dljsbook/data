@@ -5,21 +5,23 @@ interface IPrintProps {
 }
 
 class Image {
-  private label: number;
+  private label: number | string;
   private data: any;
   private size: number;
   private canvas: any;
   private dataURL: string;
   private name: string;
 
-  constructor(data, label, size, { name }) {
+  constructor(data: any, label: number | string, size: number, name: string) {
     this.data = data;
     this.label = label;
     this.size = size;
     this.name = name;
   }
 
-  print(target: HTMLElement | undefined, { invert }: IPrintProps = {}) {
+  getLabel = () => this.label;
+
+  print = (target: HTMLElement | undefined, { invert }: IPrintProps = {}) => {
     if (!this.dataURL) {
       if (!this.canvas) {
         this.canvas = document.createElement('canvas');
@@ -29,7 +31,7 @@ class Image {
       const ctx = this.canvas.getContext('2d');
 
       const data = this.data.dataSync();
-      const pixelValues = [];
+      const pixelValues: number[] = [];
       for (let i = 0; i < data.length; i++) {
         const pixel = invert ? 255 - data[i] : data[i];
         pixelValues.push(pixel, pixel, pixel, 255);

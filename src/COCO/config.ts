@@ -16,7 +16,7 @@ const BUCKETS = {
 
 export const GET_MANIFEST = getImage('manifest.json');
 
-export const GET_IMAGES = (bucket: BUCKET, path: string) => getImage(path)(bucket);
+export const GET_IMAGES = (bucket: BUCKET, path: string = '') => getImage(path)(bucket);
 
 // export const GET_IMAGE_PATH = (bucket: BUCKET, path: string) => `${IMAGE_ROOT}/${BUCKETS[bucket]}/${path}`;
 

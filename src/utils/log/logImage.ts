@@ -1,13 +1,9 @@
 import {
   IOptions,
 } from './types';
-let tfvis;
-try {
-  tfvis = require('@tensorflow/tfjs-vis');
-} catch(err) {
-}
+import tfvis from '@tensorflow/tfjs-vis';
 
-type IProps = (src: string, props?: IOptions) => void;
+type IProps = (src: string, props: IOptions) => void;
 
 const logImage: IProps = (src, { width, height, name, target } = {}) => {
   const img = new Image();

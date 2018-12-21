@@ -1,11 +1,10 @@
-import getRandom from '../utils/getRandom';
 import getAtStep from '../utils/getAtStep';
 
 import {
-  POLARITY,
-  IPoint,
   IRange,
   IGeneratorFn,
+  IPoint,
+  IGetX,
 } from '../NonLinear';
 
 // let counter = 0;
@@ -48,10 +47,6 @@ const getDistributions = (dist: number[]) => {
     ...Array(dist[2]).fill(DISTRIBUTION.BOTTOM),
   ];
 }
-
-const getXForDistributions = (step: number, num: number, distributions: DISTRIBUTION[], range: IRange) => {
-  return getXForDistribution(step, num, distributions[step], range);
-};
 
 const getXForDistribution = (step: number, num: number, dist: DISTRIBUTION, range: IRange) => {
   let x;
@@ -108,7 +103,20 @@ const getRangeForCluster = (x: number, y: number, cluster: number) => {
   };
 };
 
-const getPoint = ({
+type IGetY = (y: number) => number;
+
+type IGetPointProps = {
+  noise: number;
+  range: IRange;
+  getX: IGetX;
+  getY: IGetY;
+  num: number;
+  step: number;
+};
+
+type IGetPoint = (props: IGetPointProps) => IPoint;
+
+const getPoint: IGetPoint = ({
   noise,
   range,
   getX,
@@ -134,20 +142,36 @@ const getPoint = ({
 
   return {
     x,
-    y: getY(x, y),
+    y: getY(y),
   };
 }
 
 const defaultRange: IRange = [-1, 1];
 
-export const positiveGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const positiveGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+  num,
+  step,
+}) => getPoint({
   range,
-  getY: (x, y) => y,
-  ...props,
+  getY: y => y,
+  noise,
+  getX,
+  num,
+  step,
 });
 
-export const negativeGenerator: IGeneratorFn = (range = defaultRange, props) => getPoint({
+export const negativeGenerator: IGeneratorFn = (range = defaultRange, {
+  noise,
+  getX,
+  num,
+  step,
+}) => getPoint({
   range,
-  getY: (x, y) => -1 * y - Y_PADDING,
-  ...props,
+  getY: (y: number) => -1 * y - Y_PADDING,
+  noise,
+  getX,
+  num,
+  step,
 });
