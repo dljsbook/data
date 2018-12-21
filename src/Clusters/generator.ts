@@ -1,7 +1,7 @@
 import getRandom from '../utils/getRandom';
+import pad from '../utils/pad';
 
 import {
-  // POLARITY,
   IPoint,
   IRange,
   IGeneratorFn,
@@ -9,21 +9,6 @@ import {
 } from '../NonLinear';
 
 type IGetY = (x: number) => number;
-
-// let counter = 0;
-
-const squish = (i: number, source: [number, number], target: [number, number]) => {
-  const percent = (i - source[0]) / (source[1] - source[0]);
-  return target[0] + percent * (target[1] - target[0]);
-};
-
-const pad = (n: number, range: [number, number]) => {
-  if (n >= 0) {
-    return squish(n, [0, 1], range);
-  }
-
-  return squish(n, [-1, 0], [range[1] * -1, range[0] * -1]);
-};
 
 const PADDING = 0.15;
 const padding: [number, number] = [PADDING, 1 - PADDING];

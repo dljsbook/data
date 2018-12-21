@@ -1,4 +1,5 @@
 import getAtStep from '../utils/getAtStep';
+import squish from '../utils/squish';
 
 import {
   IRange,
@@ -6,13 +7,6 @@ import {
   IPoint,
   IGetX,
 } from '../NonLinear';
-
-// let counter = 0;
-
-const squish = (i: number, source: [number, number], target: [number, number]) => {
-  const percent = (i - source[0]) / (source[1] - source[0]);
-  return target[0] + percent * (target[1] - target[0]);
-};
 
 const getDividedDistribution = (num: number) => {
   const n = num;

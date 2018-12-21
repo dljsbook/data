@@ -1,7 +1,6 @@
 import getRandom from '../utils/getRandom';
 
 import {
-  // POLARITY,
   IPoint,
   IRange,
   IGeneratorFn,
