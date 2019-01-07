@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -10,8 +10,8 @@
     "deploy": "gh-pages -d data",
     "prepublish": "yarn build",
     "clean": "rimraf dist",
-    "build": "tsc",
-    "develop": "tsc -w",
+    "build": "rollup -c rollup.config.js",
+    "develop": "rollup -c rollup.config.js --watch",
     "test": "jest --watchAll"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-img": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-typescript2": "^0.18.1",

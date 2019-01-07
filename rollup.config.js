@@ -7,6 +7,11 @@ export default {
     file: 'dist/index.js',
     format: 'umd',
     name: 'dljsbookData',
+    globals: {
+      vega: 'vega',
+      '@tensorflow/tfjs-vis': 'tfvis',
+      '@tensorflow/tfjs': 'tf',
+    }
   },
   plugins: [
     typescript({

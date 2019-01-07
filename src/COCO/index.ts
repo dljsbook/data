@@ -52,6 +52,10 @@ type IData = {
   }
 };
 
+type IPrintProps = {
+  showAnnotations?: boolean;
+};
+
 class COCO extends Dataset {
   private data: IData;
   private manifest: {
@@ -161,15 +165,19 @@ class COCO extends Dataset {
     const src = `${DATAROOT}${GET_IMAGES(bucket, `data/${file}`)}`;
 
     const img = await loadImage(src);
+
     // we call this so subsequent src uses don't run into cross origin issues
     tf.fromPixels(img);
-    const image = await tf.image.cropAndResize(
-      tf.fromPixels(img).expandDims(0),
-      [[0, 0, img.width, img.height]],
-      [1],
-      [416, 416],
-    );
-    const annotations = anns.map((ann: Annotation) => ({
+
+    // const image = await tf.image.cropAndResize(
+    //   tf.fromPixels(img).expandDims(0),
+    //   [[0, 0, img.width, img.height]],
+    //   [1],
+    //   [416, 416],
+    // );
+    const image = await cropAndResizeImage(tf.fromPixels(img), [416, 416]);
+    console.log('anns', anns);
+    const annotations = (anns || []).map((ann: Annotation) => ({
       ...ann,
       label: categories[ann.cat],
     }));
@@ -178,30 +186,34 @@ class COCO extends Dataset {
       src,
       image,
       annotations,
-      print: async (target?: HTMLElement) => {
-        const src = await print(img, annotations);
+      print: async (target?: HTMLElement, { showAnnotations }: IPrintProps = {}) => {
+        const src = await print(img, showAnnotations === true ? annotations: []);
         log(src, { target, name: file });
       },
     };
   }
 
-  // translatePrediction = (prediction: tf.Tensor, num = 5) => {
-  //   const preds = [...prediction.dataSync()].reduce((obj, el, index) => ({
-  //     ...obj,
-  //     [el]: index,
-  //   }), {});
+  translatePrediction = (prediction: tf.Tensor, num = 5) => {
+    console.log('translatePrediction');
+    return;
+    const predictionData = Array.prototype.slice.call(prediction.dataSync());
 
-  //   const predictions = Object.keys(preds).map(k => Number(k)).sort((a, b) => b - a).slice(0, num).map(k => [k, preds[k]]).map(([confidence, id]) => {
-  //     const label = this.data.categories[id];
-  //     // console.log('id', id, 'label', label, 'confidence', confidence);
-  //     return {
-  //       label,
-  //       confidence,
-  //     };
-  //   });
+    const topIndices = getNIndicesFromArray(predictionData, num);
 
-  //   log(predictions, { name: 'Predictions' });
-  // }
+    console.log(topIndices);
+
+    const predictions = topIndices.map(([confidence, id]) => {
+      const label = this.data.categories[id];
+      // console.log('id', id, 'label', label, 'confidence', confidence);
+      return {
+        label,
+        confidence,
+      };
+    });
+    console.log(predictions);
+
+    log(predictions, { name: 'Predictions' })
+  }
 }
 
 const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
@@ -212,30 +224,29 @@ const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resol
   img.onerror = (err) => reject(err);
 });
 
-// const crop = (img: tf.Tensor3D) => {
-//   const size = Math.min(img.shape[0], img.shape[1]);
-//   const centerHeight = img.shape[0] / 2;
-//   const beginHeight = centerHeight - (size / 2);
-//   const centerWidth = img.shape[1] / 2;
-//   const beginWidth = centerWidth - (size / 2);
-//   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
-// }
+const crop = (img: tf.Tensor3D) => {
+  const size = Math.min(img.shape[0], img.shape[1]);
+  const centerHeight = img.shape[0] / 2;
+  const beginHeight = centerHeight - (size / 2);
+  const centerWidth = img.shape[1] / 2;
+  const beginWidth = centerWidth - (size / 2);
+  return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
+}
 
-// convert pixel data into a tensor
-// const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Promise<tf.Tensor3D> => {
-//   return tf.tidy(() => {
-//     const croppedImage = crop(tf.image.resizeBilinear(img, dims));
-//     return croppedImage;
-//     // return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
-//   });
-// };
+const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Promise<tf.Tensor3D> => {
+  return tf.tidy(() => {
+    const croppedImage = crop(tf.image.resizeBilinear(img, dims));
+    // return croppedImage;
+    return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+  });
+};
 
 type IAnn = {
   bbox: [number, number, number, number];
   label: number | string;
 };
 
-const print = async (img: HTMLImageElement, anns: IAnn[]) => {
+const print = async (img: HTMLImageElement, anns: IAnn[] = []) => {
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -362,6 +373,41 @@ const print = async (img: HTMLImageElement, anns: IAnn[]) => {
 
   return canvas.toDataURL();
 };
+
+const getNIndicesFromArray = (arr: number[], num: number): [number, number][] => {
+  type Init = {
+    [index: string]: number;
+  }
+  const init: Init = {};
+  const obj = arr.reduce((obj: Init, confidence: number, index: number) => ({
+    ...obj,
+    [confidence]: index,
+  }), init);
+
+  const sortedConfidences: number[] = Object.keys(obj).map(k => Number(k)).sort((a, b) => b - a).slice(0, num);
+  const inter = sortedConfidences.map((k: number): [
+    number,
+    number
+  ] => {
+    const index = obj[k];
+    return [
+      k,
+      index,
+    ];
+  });
+
+  console.log('inter', inter);
+
+  return inter;
+
+  // const r: [
+  //   number,
+  //   number
+  // ][] = inter.map((k: number) => [k, sorted[k]]);
+
+  // return r;
+};
+
 
 export default COCO;
 

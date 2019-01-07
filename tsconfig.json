@@ -15,9 +15,7 @@
     "target": "ES5",
     "lib": ["es2015", "es2017", "dom"],
     "declaration": true,
-    "module": "amd",
-    "moduleResolution": "node",
-    "outFile": "dist/index.js"
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build", "scripts", "dist", "src/**/*.test.ts"]

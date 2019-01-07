@@ -6,6 +6,7 @@ import {
 // import Image from '../utils/Image';
 import log from '../utils/log';
 import rand from '../utils/rand';
+import classes from './classes';
 
 type IData = {
   images: {
@@ -16,10 +17,26 @@ type IData = {
   };
 };
 
+type IObject = {
+  [index: string]: string;
+};
+
+const getImage = (src: string) => {
+  const img = new Image();
+  img.src = `https://i.imgur.com/4k7pTbg.jpg`;
+  img.crossOrigin = '';
+  return img;
+};
+
 class ImageNet extends Dataset {
   private data: IData;
   private manifest: string[];
   private manifestIndex: number = 0;
+
+  static classes: IObject = classes;
+  public classes: IObject = classes;
+
+  public dog: HTMLImageElement;
 
   constructor() {
     super();
@@ -27,6 +44,8 @@ class ImageNet extends Dataset {
     this.load(async () => {
       await this.loadDataset();
     });
+
+    this.dog = getImage(`https://i.imgur.com/4k7pTbg.jpg`);
   }
 
   loadNextImages = async () => {
@@ -57,18 +76,25 @@ class ImageNet extends Dataset {
     };
   }
 
-  getRandomId = () => {
+  getRandomId = async () => {
     if (!this.loaded) {
-      throw new Error('Dataset not loaded yet, call ready()');
+      await this.ready();
     }
 
     return rand(Object.keys(this.data.labels));
   }
 
-  getImage = async (labelId: string = this.getRandomId()) => {
+  getImage = async (labelId?: string) => {
     if (!this.loaded) {
       await this.ready();
-      // throw new Error('Dataset not loaded yet, call ready()');
+    }
+
+    if (!labelId) {
+      labelId = await this.getRandomId();
+    }
+
+    if (!labelId) {
+      throw new Error('No label could be found');
     }
 
     const label = this.data.labels[labelId];
@@ -87,24 +113,26 @@ class ImageNet extends Dataset {
     };
   }
 
-  translatePrediction = (prediction: tf.Tensor, num = 5) => {
+  print = (prediction: tf.Tensor, target?: HTMLElement, { num }: {
+    num?: number;
+  } = {}) => {
     const syncedPreds = prediction.dataSync();
-    console.log('check that this works');
     const preds = Array.from(syncedPreds).reduce((obj, el, index) => ({
       ...obj,
       [el]: index,
     }), {});
 
-    const predictions = Object.keys(preds).map(k => Number(k)).sort((a, b) => b - a).slice(0, num).map(k => [k, preds[k]]).map(([confidence, id]) => {
+    const predictionsAsNumbers = Object.keys(preds).map(k => Number(k)).sort((a, b) => b - a);
+
+    const predictions = predictionsAsNumbers.slice(0, num || 5).map(key => [key, preds[key]]).map(([confidence, id]) => {
       const label = this.data.labels[id];
-      // console.log('id', id, 'label', label, 'confidence', confidence);
       return {
         label,
         confidence,
       };
     });
 
-    log(predictions, { name: 'Predictions' });
+    log(predictions, { target, name: 'Predictions' });
   }
 }
 
