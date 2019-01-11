@@ -8,6 +8,7 @@ interface ISchemaProps {
   values?: any;
 }
 
+
 const schema = ({ width, height, values }: ISchemaProps) => ({
   "$schema": "https://vega.github.io/schema/vega/v4.json",
   width,
@@ -20,20 +21,20 @@ const schema = ({ width, height, values }: ISchemaProps) => ({
     }
   ],
   "scales": [
-    // {
-    //   "name": "x",
-    //   "type": "point",
-    //   "range": "width",
-    //   "domain": {"data": "table", "field": "x"}
-    // },
-    // {
-    //   "name": "y",
-    //   "type": "linear",
-    //   "range": "height",
-    //   "nice": true,
-    //   "zero": true,
-    //   "domain": {"data": "table", "field": "y"}
-    // }
+    {
+      "name": "x",
+      "type": "point" as vega.DiscreteScaleType,
+      "range": "width" as vega.RangeEnum,
+      "domain": {"data": "table", "field": "x"}
+    },
+    {
+      "name": "y",
+      "type": "linear" as vega.DiscreteScaleType,
+      "range": "height" as vega.RangeEnum,
+      "nice": true,
+      "zero": true,
+      "domain": {"data": "table", "field": "y"}
+    }
   ],
 
   "axes": [
@@ -47,31 +48,31 @@ const schema = ({ width, height, values }: ISchemaProps) => ({
     }
   ],
 
-  // "marks": [
-  //   {
-  //     "type": "group",
-  //     "from": {
-  //       "facet": {
-  //         "name": "series",
-  //         "data": "table",
-  //         "groupby": "c"
-  //       }
-  //     },
-  //     "marks": [
-  //       {
-  //         "type": "line",
-  //         "from": {"data": "series"},
-  //         "encode": {
-  //           "enter": {
-  //             "x": {"scale": "x", "field": "x"},
-  //             "y": {"scale": "y", "field": "y"},
-  //             "strokeWidth": {"value": 2}
-  //           }
-  //         }
-  //       }
-  //     ]
-  //   }
-  // ]
+  "marks": [
+    {
+      "type": "group",
+      "from": {
+        "facet": {
+          "name": "series",
+          "data": "table",
+          "groupby": "c"
+        }
+      },
+      "marks": [
+        {
+          "type": "line",
+          "from": {"data": "series"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "x", "field": "x"},
+              "y": {"scale": "y", "field": "y"},
+              "strokeWidth": {"value": 2}
+            }
+          }
+        }
+      ]
+    } as vega.Mark
+  ]
 });
 
 const makeImage = async (points: IPoints, width: number, height: number) => {
