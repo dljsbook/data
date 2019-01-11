@@ -71,4 +71,4 @@ class Line extends Dataset {
   }
 }
 
-export default new Line();
+export default Line;

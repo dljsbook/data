@@ -26,24 +26,24 @@ const schema = ({ width, height, values, showAxes, marks }: ISchemaProps) => ({
   }],
 
   "scales": [
-    // {
-    //   "name": "x",
-    //   "type": 'linear',
-    //   "round": true,
-    //   "nice": true,
-    //   "zero": true,
-    //   "domain": {"data": "source", "field": "x"},
-    //   "range": "width"
-    // },
-    // {
-    //   "name": "y",
-    //   "type": 'linear',
-    //   "round": true,
-    //   "nice": true,
-    //   "zero": true,
-    //   "domain": {"data": "source", "field": "y"},
-    //   "range": "height"
-    // }
+    {
+      "name": "x",
+      "type": 'linear',
+      "round": true,
+      "nice": true,
+      "zero": true,
+      "domain": {"data": "source", "field": "x"},
+      "range": "width"
+    } as vega.Scale,
+    {
+      "name": "y",
+      "type": 'linear',
+      "round": true,
+      "nice": true,
+      "zero": true,
+      "domain": {"data": "source", "field": "y"},
+      "range": "height"
+    } as vega.Scale
   ],
 
   ...(showAxes !== false ? {
@@ -54,13 +54,13 @@ const schema = ({ width, height, values, showAxes, marks }: ISchemaProps) => ({
         "domain": false,
         "orient": ('bottom' as vega.AxisOrient),
         "tickCount": 5,
-      },
+      } as vega.Axis,
       {
         "scale": "y",
         "grid": true,
         "domain": false,
         "orient": ('left' as vega.AxisOrient),
-      }
+      } as vega.Axis,
     ],
   } : {}),
 
@@ -89,14 +89,14 @@ const makeImage = async (points: IScatterPoint[], width: number, height: number,
     ...value,
     stroke: value.color,
     fill: value.color,
-    // fill: value.color.fade(0.5),
   }));
-  const view = new vega.View(vega.parse(schema({
+  const s = schema({
     width,
     height,
     values,
     ...options,
-  }))).renderer('none').initialize();
+  });
+  const view = new vega.View(vega.parse(s)).renderer('none').initialize();
   return await view.toImageURL('png');
 };
 

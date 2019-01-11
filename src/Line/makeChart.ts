@@ -26,7 +26,7 @@ const schema = ({ width, height, values }: ISchemaProps) => ({
       "type": "point" as vega.DiscreteScaleType,
       "range": "width" as vega.RangeEnum,
       "domain": {"data": "table", "field": "x"}
-    },
+    } as vega.Scale,
     {
       "name": "y",
       "type": "linear" as vega.DiscreteScaleType,
@@ -34,7 +34,7 @@ const schema = ({ width, height, values }: ISchemaProps) => ({
       "nice": true,
       "zero": true,
       "domain": {"data": "table", "field": "y"}
-    }
+    } as vega.Scale
   ],
 
   "axes": [
@@ -76,6 +76,7 @@ const schema = ({ width, height, values }: ISchemaProps) => ({
 });
 
 const makeImage = async (points: IPoints, width: number, height: number) => {
+
   const view = new vega.View(vega.parse(schema({
     width,
     height,

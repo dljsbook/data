@@ -52,45 +52,45 @@ class NonLinear extends Dataset {
     const initialPoints: {
       x: number;
       y: number;
-      index: number;
-      color: any;
+      label: number;
     }[] = [];
 
     const points = [
       POLARITY.POS,
       POLARITY.NEG,
-    ].reduce((arr, type, index) => {
+    ].reduce((arr, type, label) => {
       const fn: IGeneratorFn = this.generators[type];
       const points: IPoint[] = generator({
         type,
-        num: Array.isArray(this.num) ? this.num[index] : this.num / 2,
+        num: Array.isArray(this.num) ? this.num[label] : this.num / 2,
         noise: this.noise,
         random,
         fn,
       });
-      const newPoints = points.map(point => {
-        return {
-          ...point,
-          index,
-          color: COLORS[index],
-        };
-      });
+      const newPoints = points.map(point => ({
+        ...point,
+        label,
+      }));
 
       return (arr || []).concat(newPoints);
     }, initialPoints);
 
-    // const dim = Array.isArray(this.num) ? this.num.reduce((sum, n) => sum + n, 0) : this.num;
+    const dim = Array.isArray(this.num) ? this.num.reduce((sum, n) => sum + n, 0) : this.num;
 
-    // const data = tf.tensor2d(points.map(({ x, y }) => [ x, y ]), [dim, 2], 'float32');
-    // const labels = tf.tensor1d(points.map(({ index }) => index), 'float32');
+    const data = tf.tensor2d(points.map(({ x, y }) => [ x, y ]), [dim, 2], 'float32');
+    const labels = tf.tensor1d(points.map(({ label }) => label), 'float32');
 
     return {
-      // data,
-      // labels,
+      data,
+      labels,
       print: async (target?: HTMLElement, chartOptions?: any) => {
         const width = 480;
         const height = 200 + 40;
-        const chart = await makeScatter(points, width, height, chartOptions);
+        const chartPoints = points.map(point => ({
+          ...point,
+          color: COLORS[point.label],
+        }));
+        const chart = await makeScatter(chartPoints, width, height, chartOptions);
         log(chart, { target, width, height, name: this.name });
       }
     };
