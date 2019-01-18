@@ -6,10 +6,10 @@ import tfvis from '@tensorflow/tfjs-vis';
 
 type IProps = (data: ITable, props: IOptions) => void;
 
-const buildRow = (data: any[]) => {
+const buildRow = (data: any[], tag: string = 'td') => {
   const row = document.createElement('tr');
   data.forEach(d => {
-    const td = document.createElement('td');
+    const td = document.createElement(tag);
     td.innerHTML = d;
     row.appendChild(td);
   });
@@ -20,11 +20,12 @@ const buildTable = (data: ITable) => {
   const table = document.createElement('table');
   const thead = document.createElement('thead');
   const keys = Object.keys(data[0]);
-  thead.appendChild(buildRow(keys));
+  thead.appendChild(buildRow(keys, 'th'));
   const tbody = document.createElement('tbody');
-  tbody.appendChild(buildRow(data.map(d => {
-    return keys.map(k => d[k]);
-  })));
+  const rows = data.map(d => keys.map(k => d[k]));
+  rows.forEach(row => {
+    tbody.appendChild(buildRow(row));
+  })
 
   table.appendChild(thead);
   table.appendChild(tbody);

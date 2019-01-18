@@ -11,6 +11,7 @@ export default {
       vega: 'vega',
       '@tensorflow/tfjs-vis': 'tfvis',
       '@tensorflow/tfjs': 'tf',
+      Papa: 'papaparse',
     }
   },
   plugins: [
@@ -21,6 +22,8 @@ export default {
     '@tensorflow/tfjs',
     '@tensorflow/tfjs-vis',
     'vega',
+    'vega-parser',
+    'vega-embed',
     'papaparse',
   ],
 }

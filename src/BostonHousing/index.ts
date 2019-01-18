@@ -1,10 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
-// import * as Papa from 'papaparse';
+import * as Papa from 'papaparse';
 import log from '../utils/log';
 import Dataset from '../Dataset';
-// import {
-//   DATA,
-// } from './config';
+import {
+  DATA,
+} from './config';
 
 type IRow = {
   [index: string]: number;
@@ -25,12 +25,12 @@ class BostonHousing extends Dataset {
   }
 
   loadDataset = async (set: string) => {
-    // const dataset = await this.loadFromURL(DATA[set], 'text');
-    // this.data[set] = Papa.parse(dataset, {
-    //   header: true,
-    //   dynamicTyping: true,
-    //   skipEmptyLines: true,
-    // }).data;
+    const dataset = await this.loadFromURL(DATA[set], 'text');
+    this.data[set] = Papa.parse(dataset, {
+      header: true,
+      dynamicTyping: true,
+      skipEmptyLines: true,
+    }).data;
   }
 
   get = (set: string, num?: number) => {
@@ -39,7 +39,8 @@ class BostonHousing extends Dataset {
     }
 
     const dataset = this.data[set];
-    const labels = tf.tensor1d(dataset.map(({ medv }) => medv), 'float32');
+    const labels = tf.tensor1d(dataset.map(({ medv }) => medv)).expandDims(1);
+
     const data = tf.tensor2d(dataset.map(({
       medv,
       ID,
@@ -49,8 +50,8 @@ class BostonHousing extends Dataset {
     return {
       data,
       labels,
-      print: () => {
-        log(dataset, { name: 'Boston Housing' });
+      print: async (target?: HTMLElement) => {
+        log(dataset, { target, name: 'Boston Housing' });
       },
     };
   }

@@ -3,7 +3,7 @@ import * as vega from 'vega';
 type IScatterPoint = {
   x: number;
   y: number;
-  color: any;
+  color: string;
 };
 
 interface ISchemaProps {
