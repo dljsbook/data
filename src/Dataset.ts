@@ -44,7 +44,8 @@ class Dataset {
   });
 
   loadFromURL = async (url: string, method: string = 'arrayBuffer') => {
-    const resp = await fetch(`${DATAROOT}${url}`);
+    const path = url.indexOf('https') === -1 ? `${DATAROOT}${url}` : url;
+    const resp = await fetch(path);
     if (typeof method === 'string' && !resp[method]) {
       throw new Error(`Method ${method} does not exist on response`);
     }

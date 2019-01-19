@@ -23,7 +23,7 @@ type IObject = {
 
 const getImage = (src: string) => {
   const img = new Image();
-  img.src = `https://i.imgur.com/4k7pTbg.jpg`;
+  img.src = src;
   img.crossOrigin = '';
   return img;
 };
@@ -37,6 +37,7 @@ class ImageNet extends Dataset {
   public classes: IObject = classes;
 
   public dog: HTMLImageElement;
+  public blackwhite: HTMLImageElement;
 
   constructor() {
     super();
@@ -46,6 +47,7 @@ class ImageNet extends Dataset {
     });
 
     this.dog = getImage(`https://i.imgur.com/4k7pTbg.jpg`);
+    this.blackwhite = getImage('https://i.imgur.com/kVFmLSs.jpg');
   }
 
   loadNextImages = async () => {

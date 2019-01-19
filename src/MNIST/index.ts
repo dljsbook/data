@@ -62,8 +62,7 @@ class MNIST extends Dataset {
 
     this.data[set] = {
       data: tf.tensor4d(data, [n, 28, 28, 1], 'int32'),
-      // labels,
-      labels: this.oneHot(labels),
+      labels,
     };
   }
 
