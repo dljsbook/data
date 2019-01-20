@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -21,30 +21,20 @@
     "papaparse": "^4.6.3",
     "vega": "^4.4.0"
   },
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^0.14.2",
+    "@tensorflow/tfjs-vis": "^0.4.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.1.6",
-    "@dljsbook/shared": "git+https://092385dca0e47bf01523101fd23adf46f8a5869c:x-oauth-basic@github.com/dljsbook/shared.git",
-    "@tensorflow/tfjs": "^0.14.2",
-    "@tensorflow/tfjs-vis": "^0.4.2",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.18",
     "@types/papaparse": "^4.5.7",
     "gh-pages": "^2.0.1",
     "rimraf": "^2.6.2",
-    "rollup": "^0.67.3",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-img": "^1.1.0",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-typescript": "^1.0.0",
-    "rollup-plugin-typescript2": "^0.19.2",
-    "rollup-plugin-uglify": "^6.0.0",
     "ts-jest": "^23.10.5",
     "tslib": "^1.9.3",
-    "typescript": "^3.1.6",
-    "webpack": "^4.29.0",
-    "webpack-cli": "^3.2.1"
+    "typescript": "^3.1.6"
   },
   "peerDependencies": {
     "@tensorflow/tfjs": "^0.14.0",
