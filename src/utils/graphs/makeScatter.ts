@@ -1,9 +1,15 @@
 import * as vega from 'vega';
 
+type IColor = {
+  r: { value: string };
+  g: { value: string };
+  b: { value: string };
+}
+
 type IScatterPoint = {
   x: number;
   y: number;
-  color: string;
+  color: string | IColor;
 };
 
 interface ISchemaProps {
