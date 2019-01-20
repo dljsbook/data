@@ -4,6 +4,7 @@ import log from '../utils/log';
 import makeScatter from '../utils/graphs/makeScatter';
 import { COLORS } from '../config';
 import generator from './generator';
+// import * as vega from 'vega';
 
 import {
   POLARITY,
@@ -90,6 +91,7 @@ class NonLinear extends Dataset {
           ...point,
           color: COLORS[point.label],
         }));
+
         const chart = await makeScatter(chartPoints, width, height, chartOptions);
         log(chart, { target, width, height, name: this.name });
       }
@@ -112,6 +114,22 @@ class NonLinear extends Dataset {
     };
   }
 }
+
+// const renderHere = (target: any) => {
+//   console.log('render here within data 2');
+//   const vega: any = (window as any).vega;
+//   vega.loader()
+//     .load('https://vega.github.io/vega/examples/bar-chart.vg.json')
+//     .then(function(data: any) { renderVega(JSON.parse(data)); });
+
+//   function renderVega(spec: any) {
+//     new vega.View(vega.parse(spec))
+//       .renderer('canvas')  // set renderer (canvas or svg)
+//       .initialize(target) // initialize view within parent DOM container
+//       .hover()             // enable hover encode set processing
+//       .run();
+//   }
+// }
 
 export default NonLinear;
 
