@@ -26,8 +26,8 @@ const logImage: IProps = (src, { width, height, name, target } = {}) => {
 
     if (target) {
       target.appendChild(img);
-    } else if (window.tfvis) {
-      const surface = window.tfvis.visor().surface({
+    } else if ((window as any).tfvis) {
+      const surface = (window as any).tfvis.visor().surface({
         name: name || 'Image',
         tab: 'Console',
       });

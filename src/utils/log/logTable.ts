@@ -34,14 +34,14 @@ const buildTable = (data: ITable) => {
 const logTable: IProps = (data, { name, target } = {}) => {
   if (target) {
     target.appendChild(buildTable(data));
-  } else if (window.tfvis) {
-    const surface = window.tfvis.visor().surface({
+  } else if ((window as any).tfvis) {
+    const surface = (window as any).tfvis.visor().surface({
       name: name || 'Table',
       tab: 'Console',
     });
     const headers = Object.keys(data[0]);
     const values = data.map(row => headers.map(header => row[header]));
-    window.tfvis.render.table({
+    (window as any).tfvis.render.table({
       headers,
       values,
     }, surface);
