@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.7.2",
+  "version": "0.7.5",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -37,8 +37,7 @@
     "typescript": "^3.1.6"
   },
   "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.0",
-    "@tensorflow/tfjs-vis": "^0.4.0"
+    "@tensorflow/tfjs": "^0.14.0"
   },
   "jest": {
     "roots": [

@@ -1,7 +1,6 @@
 import {
   IOptions,
 } from './types';
-// import tfvis from '@tensorflow/tfjs-vis';
 
 type IProps = (src: string, props: IOptions) => void;
 
@@ -27,12 +26,12 @@ const logImage: IProps = (src, { width, height, name, target } = {}) => {
 
     if (target) {
       target.appendChild(img);
-    // } else if (tfvis) {
-    //   const surface = tfvis.visor().surface({
-    //     name: name || 'Image',
-    //     tab: 'Console',
-    //   });
-    //   surface.drawArea.appendChild(img);
+    } else if (window.tfvis) {
+      const surface = window.tfvis.visor().surface({
+        name: name || 'Image',
+        tab: 'Console',
+      });
+      surface.drawArea.appendChild(img);
     } else {
       console.log('%c ', Object.keys(style).map(key => `${key}: ${style[key]}`).join(';'));
     }

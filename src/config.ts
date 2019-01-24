@@ -1,4 +1,4 @@
-// const Color = require('color');
+const Color = require('color');
 
 export const DATAROOT = 'https://dljsbook.github.io/datasets/';
 // export const DATAROOT = 'http://localhost/dljsbook/code/datasets/data/';
