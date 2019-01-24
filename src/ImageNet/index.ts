@@ -3,7 +3,6 @@ import Dataset from '../Dataset';
 import {
   DATA,
 } from './config';
-// import Image from '../utils/Image';
 import log from '../utils/log';
 import rand from '../utils/rand';
 import classes from './classes';
@@ -26,6 +25,10 @@ const getImage = (src: string) => {
   img.src = src;
   img.crossOrigin = '';
   return img;
+};
+
+const without = (images: string[], filesTried: string[]): string[] => {
+  return images.filter(src => !filesTried.includes(src));
 };
 
 class ImageNet extends Dataset {
@@ -86,6 +89,22 @@ class ImageNet extends Dataset {
     return rand(Object.keys(this.data.labels));
   }
 
+  loadRandomImage = async (labelId: string, imagesTried: string[] = []): Promise<HTMLImageElement> => {
+    if (imagesTried.length >= this.data.images[labelId].length) {
+      throw new Error(`No images could be loaded for label ${labelId}`);
+    }
+    const src = rand(without(this.data.images[labelId], imagesTried));
+    try {
+      const img = await loadImage(src);
+      return img;
+    } catch(err) {
+      return this.loadRandomImage(labelId, [
+        ...imagesTried,
+        src,
+      ]);
+    }
+  }
+
   getImage = async (labelId?: string) => {
     if (!this.loaded) {
       await this.ready();
@@ -101,16 +120,15 @@ class ImageNet extends Dataset {
 
     const label = this.data.labels[labelId];
 
-    const src = rand(this.data.images[labelId]);
+    const img = await this.loadRandomImage(labelId);
 
-    const img = await loadImage(src);
     const image = await cropAndResizeImage(tf.fromPixels(img), [224, 224]);
 
     return {
       image,
       label,
       print: (target?: HTMLElement) => {
-        log(src, { target, name: label });
+        log(img.src, { target, name: label });
       },
     };
   }

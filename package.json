@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -19,14 +19,15 @@
   "dependencies": {
     "color": "^3.1.0",
     "papaparse": "^4.6.3",
-    "vega": "^4.4.0"
+    "vega": "^4.4.0",
+    "vega-loader": "^3.1.0"
   },
   "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.2",
-    "@tensorflow/tfjs-vis": "^0.4.2"
+    "@tensorflow/tfjs": "^0.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
+    "@tensorflow/tfjs": "^0.14.2",
     "@types/jest": "^23.3.10",
     "@types/node": "^10.12.18",
     "@types/papaparse": "^4.5.7",
@@ -35,9 +36,6 @@
     "ts-jest": "^23.10.5",
     "tslib": "^1.9.3",
     "typescript": "^3.1.6"
-  },
-  "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.0"
   },
   "jest": {
     "roots": [
