@@ -5,6 +5,9 @@ import Dataset from '../Dataset';
 import {
   DATA,
 } from './config';
+import {
+  DATAROOT,
+} from '../config';
 
 type IData = {
   images: string[];
@@ -35,10 +38,12 @@ class Animals extends Dataset {
       const category = row['Category'];
       const img = `${DATA.root}/${row['Local Link']}`;
 
-      return {
-        img,
-        category,
-      };
+      return this.loadFromURL(img).then(bytes => {
+        return {
+          img: bytes,
+          category,
+        };
+      });
     }));
 
     this.data = {
