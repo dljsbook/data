@@ -33,7 +33,7 @@ class Animals extends Dataset {
 
     const data = await Promise.all(rows.map(row => {
       const label = row['Category'];
-      const src = `${DATA.root}/${row['Link']}`;
+      const src = row['Link'];
 
       return {
         img: src,
