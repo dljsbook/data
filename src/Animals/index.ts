@@ -21,12 +21,25 @@ class Animals extends Dataset {
     const url = `${DATA.root}/${DATA.data}`;
     const data = await this.loadFromURL(url, 'text');
     console.log(data);
-    const csv = Papa.parse(data, {
+    const rows = Papa.parse(data, {
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
     }).data;
-    console.log(csv);
+
+    const images = await Promise.all(rows.map(row => {
+      const category = row['Category'];
+      const url = `${DATA.root}/${row['Local Link']}`;
+
+      this.loadFromURL(url).then(img => {
+        return {
+          img,
+          category,
+        };
+      });
+    }));
+
+    console.log('images', images);
 
     // this.data = {
     //   images,
