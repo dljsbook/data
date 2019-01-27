@@ -7,5 +7,6 @@ export { default as Stripes } from './Stripes';
 export { default as Circles } from './Circles';
 export { default as Swirl } from './Swirl';
 export { default as ImageNet } from './ImageNet';
+export { default as Animals } from './Animals';
 export { default as log } from './utils/log';
 export { COLORS } from './config';
