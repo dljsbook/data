@@ -20,7 +20,6 @@ class Animals extends Dataset {
   loadDataset = async () => {
     const url = `${DATA.root}/${DATA.data}`;
     const data = await this.loadFromURL(url, 'text');
-    console.log(data);
     const rows = Papa.parse(data, {
       header: true,
       dynamicTyping: true,
@@ -29,9 +28,10 @@ class Animals extends Dataset {
 
     const images = await Promise.all(rows.map(row => {
       const category = row['Category'];
-      const url = `${DATA.root}/${row['Local Link']}`;
+      const imgURL = `${DATA.root}/${row['Local Link']}`;
+      console.log(imgURL);
 
-      this.loadFromURL(url).then(img => {
+      this.loadFromURL(imgURL).then(img => {
         return {
           img,
           category,
