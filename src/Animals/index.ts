@@ -36,7 +36,7 @@ class Animals extends Dataset {
       const src = `${DATA.root}/${row['Link']}`;
 
       return {
-        src,
+        img: src,
         label,
       };
 
@@ -48,7 +48,7 @@ class Animals extends Dataset {
 
     this.data = {
       images: data.map(row => row.img),
-      labels: data.map(row => row.category),
+      labels: data.map(row => row.label),
     };
   }
 
