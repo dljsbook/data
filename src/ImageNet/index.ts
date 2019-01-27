@@ -6,6 +6,8 @@ import {
 import log from '../utils/log';
 import rand from '../utils/rand';
 import classes from './classes';
+import loadImage from '../utils/loadImage';
+import processImage from '../utils/processImage';
 
 type IData = {
   images: {
@@ -95,8 +97,7 @@ class ImageNet extends Dataset {
     }
     const src = rand(without(this.data.images[labelId], imagesTried));
     try {
-      const img = await loadImage(src);
-      return img;
+      return loadImage(src);
     } catch(err) {
       return this.loadRandomImage(labelId, [
         ...imagesTried,
@@ -122,7 +123,7 @@ class ImageNet extends Dataset {
 
     const img = await this.loadRandomImage(labelId);
 
-    const image = await cropAndResizeImage(tf.fromPixels(img), [224, 224]);
+    const image = await processImage(img, [224, 224]);
 
     return {
       image,
@@ -156,29 +157,5 @@ class ImageNet extends Dataset {
   }
 }
 
-const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
-  const img = new Image();
-  img.src = src;
-  img.crossOrigin = '';
-  img.onload = () => resolve(img);
-  img.onerror = (err) => reject(err);
-});
-
-const crop = (img: tf.Tensor3D) => {
-  const size = Math.min(img.shape[0], img.shape[1]);
-  const centerHeight = img.shape[0] / 2;
-  const beginHeight = centerHeight - (size / 2);
-  const centerWidth = img.shape[1] / 2;
-  const beginWidth = centerWidth - (size / 2);
-  return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
-}
-
-// convert pixel data into a tensor
-const cropAndResizeImage = async (img: tf.Tensor3D, dims: [number, number]): Promise<tf.Tensor3D> => {
-  return tf.tidy(() => {
-    const croppedImage = crop(tf.image.resizeBilinear(img, dims));
-    return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
-  });
-};
 
 export default ImageNet;
