@@ -6,8 +6,13 @@ import {
   DATA,
 } from './config';
 
+type IData = {
+  images: string[];
+  labels: string[];
+};
+
 class Animals extends Dataset {
-  // private data: IData;
+  private data: IData;
 
   constructor() {
     super();
@@ -19,45 +24,30 @@ class Animals extends Dataset {
 
   loadDataset = async () => {
     const url = `${DATA.root}/${DATA.data}`;
-    const data = await this.loadFromURL(url, 'text');
-    const rows = Papa.parse(data, {
+    const csvText = await this.loadFromURL(url, 'text');
+    const rows = Papa.parse(csvText, {
       header: true,
       dynamicTyping: true,
       skipEmptyLines: true,
     }).data;
 
-    const images = await Promise.all(rows.map(row => {
+    const data = await Promise.all(rows.map(row => {
       const category = row['Category'];
-      const imgURL = `${DATA.root}/${row['Local Link']}`;
-      console.log(imgURL);
+      const img = `${DATA.root}/${row['Local Link']}`;
 
-      return this.loadFromURL(imgURL).then(img => {
-        return {
-          img,
-          category,
-        };
-      });
+      return {
+        img,
+        category,
+      };
     }));
 
-    console.log('images', images);
-
-    // this.data = {
-    //   images,
-    //   labels,
-    // };
+    this.data = {
+      images: data.map(row => row.img),
+      labels: data.map(row => row.category),
+    };
   }
 
-  // getImage = async (labelId?: string) => {
-  //   const image = await cropAndResizeImage(tf.fromPixels(img), [224, 224]);
-
-  //   return {
-  //     image,
-  //     label,
-  //     print: (target?: HTMLElement) => {
-  //       log(img.src, { target, name: label });
-  //     },
-  //   };
-  // }
+  getData = () => this.data;
 
   // print = (prediction: tf.Tensor, target?: HTMLElement, { num }: {
   //   num?: number;
