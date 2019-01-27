@@ -31,7 +31,7 @@ class Animals extends Dataset {
       const imgURL = `${DATA.root}/${row['Local Link']}`;
       console.log(imgURL);
 
-      this.loadFromURL(imgURL).then(img => {
+      return this.loadFromURL(imgURL).then(img => {
         return {
           img,
           category,
