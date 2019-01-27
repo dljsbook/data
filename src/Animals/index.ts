@@ -5,9 +5,6 @@ import Dataset from '../Dataset';
 import {
   DATA,
 } from './config';
-import {
-  DATAROOT,
-} from '../config';
 
 type IData = {
   images: string[];
@@ -35,15 +32,18 @@ class Animals extends Dataset {
     }).data;
 
     const data = await Promise.all(rows.map(row => {
-      const category = row['Category'];
-      const img = `${DATA.root}/${row['Local Link']}`;
+      const label = row['Category'];
+      const src = `${DATA.root}/${row['Link']}`;
 
-      return this.loadFromURL(img).then(bytes => {
-        return {
-          img: bytes,
-          category,
-        };
-      });
+      return {
+        src,
+        label,
+      };
+
+      // return this.loadFromURL(src, 'blob').then(img => ({
+      //   img,
+      //   category,
+      // }));
     }));
 
     this.data = {
