@@ -5,14 +5,18 @@
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
   "repository": "https://github.com/dljsbook/data",
-  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "main": "dist/dljsbookData.umd.min.js",
+  "browser": "dist/dljsbookData.umd.min.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "tslint -p . -t verbose",
     "deploy": "gh-pages -d data",
     "prepublish": "yarn build",
     "clean": "rimraf dist",
-    "build": "yarn clean && yarn lint && tsc -p tsconfig.json",
+    "build:typescript": "tsc -p config.json",
+    "build:webpack": "webpack --config webpack.config.js",
+    "build": "yarn clean && yarn lint && npm run build:typescript && npm run build:webpack",
     "develop": "tsc -p tsconfig.json --watch",
     "test": "jest --watchAll"
   },
@@ -35,7 +39,9 @@
     "rimraf": "^2.6.2",
     "ts-jest": "^23.10.5",
     "tslib": "^1.9.3",
-    "typescript": "^3.1.6"
+    "typescript": "^3.1.6",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
   },
   "jest": {
     "roots": [
