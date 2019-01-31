@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -14,9 +14,9 @@
     "deploy": "gh-pages -d data",
     "prepublish": "yarn build",
     "clean": "rimraf dist",
-    "build:typescript": "tsc -p config.json",
+    "build:typescript": "tsc -p tsconfig.json",
     "build:webpack": "webpack --config webpack.config.js",
-    "build": "yarn clean && yarn lint && npm run build:typescript && npm run build:webpack",
+    "build": "yarn clean && yarn lint && yarn build:typescript && yarn build:webpack",
     "develop": "tsc -p tsconfig.json --watch",
     "test": "jest --watchAll"
   },
