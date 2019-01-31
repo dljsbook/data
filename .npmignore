@@ -10,3 +10,5 @@ example
 .travis.yml
 .rpt2_cache
 webpack.config.js
+example
+test

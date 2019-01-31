@@ -1,10 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
 import Dataset from '../Dataset';
 import log from '../utils/log';
-import makeScatter from '../utils/graphs/makeScatter';
+import makeScatter from './makeScatter';
 import { COLORS } from '../config';
 import generator from './generator';
-// import * as vega from 'vega';
 
 import {
   POLARITY,

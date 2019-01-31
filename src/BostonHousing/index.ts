@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import * as Papa from 'papaparse';
+import parseCsv from '../utils/parseCsv';
 import log from '../utils/log';
 import Dataset from '../Dataset';
 import {
@@ -26,11 +26,7 @@ class BostonHousing extends Dataset {
 
   loadDataset = async (set: string) => {
     const dataset = await this.loadFromURL(DATA[set], 'text');
-    this.data[set] = Papa.parse(dataset, {
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-    }).data;
+    this.data[set] = parseCsv(dataset);
   }
 
   get = (set: string, num?: number) => {

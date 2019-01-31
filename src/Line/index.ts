@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import Dataset from '../Dataset';
-import makeChart from './makeChart';
+import makeChart, { IPoint } from '../utils/makeChart';
 import log from '../utils/log';
 import getAtStep from '../utils/getAtStep';
 // import data from '../utils/data';
@@ -50,25 +50,57 @@ class Line extends Dataset {
   get = (num?: number) => {
     this.init({ num });
 
-    const points: [number, number][] = [];
+    const points: IPoint[] = [];
     for (let step = 0; step < this.num; step++) {
       const x = getAtStep(step, this.num, this.start, this.end);
       const y = getY(x, this.slope, this.intercept);
-      points.push([x, y]);
+      const point = {
+        x,
+        y,
+      };
+      points.push(point);
     }
-    const data = getTensor(points.map(([x]) => x), this.num);
-    const labels = getTensor(points.map(([_, y]) => y), this.num);
+    const data = getTensor(points.map(({ x }) => x), this.num);
+    const labels = getTensor(points.map(({ y }) => y), this.num);
     return {
       data,
       labels,
       print: async (target?: HTMLElement, { width, height }: IPrintProps = {}) => {
         width = width || 480;
         height = height || 240;
-        const chart = await makeChart(points, width, height);
+        const chart = await makeChart(getChartData(points), width, height);
         log(chart, { target, width, height, name: 'Line' });
       },
     };
   }
 }
+
+const getChartData = (data: IPoint[]) => ({
+  type: 'line',
+  data: {
+    datasets: [{
+      data,
+      fill: false,
+      borderColor:"rgb(75, 192, 192)",
+    }]
+  },
+  options: {
+    animation: {
+      duration: 0,
+    },
+    responsive: false,
+    scales: {
+      yAxes: [{
+        display: true,
+      }],
+      xAxes: [{
+        type: 'linear',
+      }],
+    },
+    legend: {
+      display: false,
+    },
+  },
+});
 
 export default Line;

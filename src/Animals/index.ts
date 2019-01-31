@@ -1,5 +1,5 @@
 // import * as tf from '@tensorflow/tfjs';
-import * as Papa from 'papaparse';
+import parseCsv from '../utils/parseCsv';
 import Dataset from '../Dataset';
 // import log from '../utils/log';
 import {
@@ -25,11 +25,7 @@ class Animals extends Dataset {
   loadDataset = async () => {
     const url = `${DATA.root}/${DATA.data}`;
     const csvText = await this.loadFromURL(url, 'text');
-    const rows = Papa.parse(csvText, {
-      header: true,
-      dynamicTyping: true,
-      skipEmptyLines: true,
-    }).data;
+    const rows = parseCsv(csvText);
 
     const data = await Promise.all(rows.map(row => {
       const label = row['Category'];

@@ -7,8 +7,8 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'dljsbookData.umd.min.js',
-    library: 'dljsbookData',
+    filename: 'dljsData.umd.min.js',
+    library: 'dljsData',
     libraryTarget: 'umd',
   },
   externals: {

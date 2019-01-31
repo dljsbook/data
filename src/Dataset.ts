@@ -46,20 +46,17 @@ class Dataset {
   loadFromURL = async (url: string, method: string = 'arrayBuffer') => {
     const path = url.indexOf('https') === -1 ? `${DATAROOT}${url}` : url;
     const resp = await fetch(path);
-    if (typeof method === 'string' && !resp[method]) {
-      throw new Error(`Method ${method} does not exist on response`);
-    }
+
     if (method === 'arrayBuffer') {
       const buff = await resp.arrayBuffer();
       return new Uint8Array(buff);
     }
 
-    // if (typeof method === 'string') {
-    //   return await resp[method]();
-    // }
+    if (typeof method === 'string' && !resp[method]) {
+      throw new Error(`Method ${method} does not exist on response`);
+    }
 
     return await resp[method]();
-    // return method(resp);
   }
 
   load = async (fn?: () => void) => {
