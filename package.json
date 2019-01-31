@@ -1,13 +1,11 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.8.1",
+  "version": "0.8.4",
   "description": "Data",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
   "repository": "https://github.com/dljsbook/data",
-  "module": "dist/index.js",
-  "main": "dist/dljsbookData.umd.min.js",
-  "browser": "dist/dljsbookData.umd.min.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "tslint -p . -t verbose",
@@ -27,7 +25,7 @@
     "vega-loader": "^3.1.0"
   },
   "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.0"
+    "@tensorflow/tfjs": "^0.14.2"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
