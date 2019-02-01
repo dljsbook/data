@@ -34,10 +34,11 @@ class BostonHousing extends Dataset {
       throw new Error('Dataset not loaded yet, call ready()');
     }
 
-    const dataset = this.data[set];
-    const labels = tf.tensor1d(dataset.map(({ medv }) => medv)).expandDims(1);
+    const dataset: IRow[] = this.data[set];
+    const n = num !== undefined ? num : dataset.length;
+    const labels = tf.tensor1d(dataset.slice(0, n).map(({ medv }) => medv)).expandDims(1);
 
-    const data = tf.tensor2d(dataset.map(({
+    const data = tf.tensor2d(dataset.slice(0, n).map(({
       medv,
       ID,
       ...rest
@@ -47,7 +48,7 @@ class BostonHousing extends Dataset {
       data,
       labels,
       print: async (target?: HTMLElement) => {
-        log(dataset, { target, name: 'Boston Housing' });
+        log(dataset.slice(0, n), { target, name: 'Boston Housing' });
       },
     };
   }
