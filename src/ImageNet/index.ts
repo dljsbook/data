@@ -123,7 +123,7 @@ class ImageNet extends Dataset {
 
     const img = await this.loadRandomImage(labelId);
 
-    const image = await processImage(img, [224, 224]);
+    const image = await ImageNet.processImage(img, [224, 224]);
 
     return {
       image,
@@ -156,7 +156,7 @@ class ImageNet extends Dataset {
     log(predictions, { target, name: 'Predictions' });
   }
 
-  processImage = async (image: HTMLImageElement | string, dims: [number, number] = [224, 224]) => {
+  static processImage = async (image: HTMLImageElement | string, dims: [number, number] = [224, 224]) => {
     return await processImage(image, dims);
   }
 }
