@@ -155,6 +155,10 @@ class ImageNet extends Dataset {
 
     log(predictions, { target, name: 'Predictions' });
   }
+
+  processImage = async (image: HTMLImageElement | string, dims: [number, number] = [224, 224]) => {
+    return await processImage(image, dims);
+  }
 }
 
 

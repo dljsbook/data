@@ -1,5 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 
+type IImage = HTMLImageElement | ImageData | HTMLCanvasElement | HTMLVideoElement;
+
 const crop = (img: tf.Tensor3D) => {
   const size = Math.min(img.shape[0], img.shape[1]);
   const centerHeight = img.shape[0] / 2;
@@ -10,12 +12,21 @@ const crop = (img: tf.Tensor3D) => {
 }
 
 // convert pixel data into a tensor
-const cropAndResizeImage = async (img: HTMLImageElement, dims: [number, number]): Promise<tf.Tensor3D> => {
+const cropAndResizeImage = async (img: IImage | string, dims: [number, number]): Promise<tf.Tensor3D> => {
   return tf.tidy(() => {
-    const pixels = tf.fromPixels(img);
+    const pixels = tf.fromPixels(getImage(img));
     const croppedImage = crop(tf.image.resizeBilinear(pixels, dims));
     return croppedImage.expandDims(0).toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
   });
 };
+
+const getImage = (src: IImage | string): (HTMLImageElement | ImageData | HTMLCanvasElement | HTMLVideoElement) => {
+  if (typeof src === 'string') {
+    const image = new Image();
+    image.src = src;
+    return image;
+  }
+  return src;
+}
 
 export default cropAndResizeImage;
