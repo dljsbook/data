@@ -3,7 +3,7 @@ import { COLORS } from "../config";
 const DEFAULT_NUM = 2;
 const DEFAULT_WIDTH = 50;
 const DEFAULT_HEIGHT = 50;
-const parsedColors = COLORS.map(c => Color(c).hsl().color);
+const parsedColors = COLORS.map(c => Color(c).hsl().array());
 
 export enum LABEL {
   BLUE = 0,
@@ -73,7 +73,7 @@ const getColor = (label: LABEL, options: IOptions = {}): Color => {
 const rand = (max: number) => Math.floor(Math.random() * max);
 
 const getColors = (num: number = DEFAULT_NUM, labels = DEFAULT_LABELS, options?: IOptions): Color[] => {
-  const colors: string[] = [];
+  const colors: Color[] = [];
   for (let i = 0; i < num; i++) {
     const r = rand(labels.length);
     const label = labels[r];
@@ -102,7 +102,7 @@ const getAsImages = (
   const imgData = ctx.createImageData(width, height);
 
   return colors.map(color => {
-    const [r, g, b] = color.rgb().color;
+    const [r, g, b] = color.rgb().array();
     for (let i = 0; i < imgData.data.length; i += 4) {
       imgData.data[i + 0] = r;
       imgData.data[i + 1] = g;
