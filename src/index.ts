@@ -11,4 +11,4 @@ export { default as Animals } from './Animals';
 export { default as log } from './utils/log';
 export { default as oneHot } from './utils/oneHot';
 export { default as processImage } from './utils/processImage';
-// export { COLORS } from './config';
+export { default as Colors } from './Colors';

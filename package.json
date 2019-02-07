@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.9.0",
+  "version": "0.9.4",
   "description": "This is a supporting library for the book Deep Learning With Javascript (https://dljsbook.com).",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",

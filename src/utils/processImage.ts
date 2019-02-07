@@ -16,7 +16,7 @@ const processImage = async (img: IImage | string, dims: [number, number]): Promi
   if (!img) {
     throw new Error('You must provide an image');
   }
-  if (!dims || dims.length === 2) {
+  if (!dims || dims.length !== 2) {
     throw new Error('You must provide valid dimensions by which to process');
   }
   return tf.tidy(() => {

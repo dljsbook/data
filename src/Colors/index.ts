@@ -1,16 +1,23 @@
-import Color from 'color';
-import { COLORS } from "../config";
+import * as Color from 'color';
+import { COLORS as CONFIG_COLORS } from "../config";
 const DEFAULT_NUM = 2;
 const DEFAULT_WIDTH = 50;
 const DEFAULT_HEIGHT = 50;
-const parsedColors = COLORS.map(c => Color(c).hsl().array());
+const parsedColors = CONFIG_COLORS.map(c => Color(c).hsl().array());
 
-export enum LABEL {
+enum LABEL {
   BLUE = 0,
   ORANGE = 1,
   PURPLE = 2,
-  GREEN = 3,
+  GREEN = 3
 }
+
+const LABEL_STRINGS = {
+  [LABEL.BLUE]: "blue",
+  [LABEL.ORANGE]: "orange",
+  [LABEL.PURPLE]: "purple",
+  [LABEL.GREEN]: "green"
+};
 
 interface IRandom {
   h: number;
@@ -72,24 +79,42 @@ const getColor = (label: LABEL, options: IOptions = {}): Color => {
 
 const rand = (max: number) => Math.floor(Math.random() * max);
 
-const getColors = (num: number = DEFAULT_NUM, labels = DEFAULT_LABELS, options?: IOptions): Color[] => {
-  const colors: Color[] = [];
+interface IColor {
+  color: Color;
+  label: string;
+}
+
+interface IColorData {
+  data: string;
+  label: string;
+}
+
+const getColors = (num: number, labels: LABEL[], options?: IOptions): IColor[] => {
+const colors: IColor[] = [];
   for (let i = 0; i < num; i++) {
     const r = rand(labels.length);
     const label = labels[r];
-    colors.push(getColor(label, options));
+    colors.push({
+      label: LABEL_STRINGS[label],
+      color: getColor(label, options)
+    });
   }
   return colors;
 };
+
+interface IData {
+  data: string[];
+  labels: string[];
+}
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
 const getAsImages = (
   options: IOptions = {},
-  num?: number,
-  labels?: LABEL[],
-): string[] => {
+  num: number = DEFAULT_NUM,
+  labels: LABEL[] = DEFAULT_LABELS,
+): IData => {
   const colors = getColors(num, labels, options);
 
   if (!ctx) {
@@ -101,7 +126,7 @@ const getAsImages = (
 
   const imgData = ctx.createImageData(width, height);
 
-  return colors.map(color => {
+  return colors.map(({ color, label }) => {
     const [r, g, b] = color.rgb().array();
     for (let i = 0; i < imgData.data.length; i += 4) {
       imgData.data[i + 0] = r;
@@ -110,8 +135,14 @@ const getAsImages = (
       imgData.data[i + 3] = 255;
     }
     ctx.putImageData(imgData, 0, 0);
-    return canvas.toDataURL();
-  });
+    return {
+      data: canvas.toDataURL(),
+      label,
+    };
+  }).reduce(({ data, labels }, color: IColorData) => ({
+    data: data.concat(color.data),
+    labels: labels.concat(color.label),
+  }), { data: [], labels: [] } as IData);
 };
 
 class Colors {
@@ -120,7 +151,7 @@ class Colors {
   };
 
   getForLabel = (label: LABEL, num?: number, options?: IOptions) => {
-    return getAsImages(options, num, [label]);
+    return getAsImages(options, num, [label]).data;
   };
 }
 
