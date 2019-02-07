@@ -12,7 +12,13 @@ const crop = (img: tf.Tensor3D) => {
 }
 
 // convert pixel data into a tensor
-const cropAndResizeImage = async (img: IImage | string, dims: [number, number]): Promise<tf.Tensor3D> => {
+const processImage = async (img: IImage | string, dims: [number, number]): Promise<tf.Tensor3D> => {
+  if (!img) {
+    throw new Error('You must provide an image');
+  }
+  if (!dims || dims.length === 2) {
+    throw new Error('You must provide valid dimensions by which to process');
+  }
   return tf.tidy(() => {
     const pixels = tf.fromPixels(getImage(img));
     const croppedImage = crop(tf.image.resizeBilinear(pixels, dims));
@@ -29,4 +35,4 @@ const getImage = (src: IImage | string): (HTMLImageElement | ImageData | HTMLCan
   return src;
 }
 
-export default cropAndResizeImage;
+export default processImage;
