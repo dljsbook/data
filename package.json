@@ -1,6 +1,6 @@
 {
   "name": "@dljsbook/data",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "This is a supporting library for the book Deep Learning With Javascript (https://dljsbook.com).",
   "author": "Kevin Scott <kevin@dljsbook.com>",
   "license": "MIT",
@@ -20,12 +20,10 @@
     "test": "jest --watchAll"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^0.14.2",
     "@types/color": "^3.0.0",
     "chart.js": "^2.7.3",
     "color": "^3.1.0"
-  },
-  "peerDependencies": {
-    "@tensorflow/tfjs": "^0.14.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
