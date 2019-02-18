@@ -146,7 +146,7 @@ const getAsImages = (
 };
 
 class Colors {
-  get = (num: number = DEFAULT_NUM, labels?: LABEL[], options?: IOptions) => {
+  get = (num: number = DEFAULT_NUM, options?: IOptions, labels?: LABEL[]) => {
     return getAsImages(options, num, labels);
   };
 
